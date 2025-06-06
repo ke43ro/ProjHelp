@@ -24,6 +24,7 @@ Partial Class F_Main
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(F_Main))
         Me.LBPlayList = New System.Windows.Forms.ListBox()
         Me.T_filesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.TxtSearch = New System.Windows.Forms.TextBox()
@@ -314,6 +315,7 @@ Partial Class F_Main
         Me.Controls.Add(Me.LBPlayList)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Label3)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "F_Main"
         Me.Text = "Projection Helper"
         CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()

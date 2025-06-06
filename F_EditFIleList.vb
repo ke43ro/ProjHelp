@@ -3,7 +3,7 @@
 Public Class F_EditFileList
     Private bFormOpen As Boolean = False
     Private T_filesTable As FilesTable
-    Private T_filesBindingSource As New BindingSource
+    Private ReadOnly T_filesBindingSource As New BindingSource
     Private T_playlistsTable As PlaylistsTable
     Private Tx_playlist2FileTable As Tx_playlistTable
     Private isShort As Boolean = False

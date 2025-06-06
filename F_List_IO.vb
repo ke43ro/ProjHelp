@@ -2,12 +2,9 @@
 
 ' Used to import and export lists of files in Projection Helper
 Public Class F_List_IO
-    'Private iFilesStart, iFilesEnd As Integer
     Private filesView As DataView
     Private isT_FilesUpdated As Boolean = False
     Private T_filesTable As FilesTable
-    'Private Tx_playlist2FileTable As Tx_playlistTable
-    Private isShort As Boolean = False
     Private ReadOnly myMsgBox As New DlgMsgBox
 
     Private Sub F_List_IO_Load(sender As Object, e As EventArgs) Handles MyBase.Load

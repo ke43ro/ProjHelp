@@ -5,7 +5,7 @@ Partial Class F_FillTables
     Private szFolder As String = ""
     Private iFilesStart, iFilesEnd As Integer
     Private isShort As Boolean = False
-    Private isDebug As Boolean = My.Settings.Debug
+    Private ReadOnly isDebug As Boolean = My.Settings.Debug
     Private T_filesTable As FilesTable
     Private ReadOnly myMsgBox As New DlgMsgBox
 

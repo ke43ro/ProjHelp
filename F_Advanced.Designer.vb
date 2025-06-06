@@ -29,7 +29,7 @@ Partial Class F_Advanced
         Me.BtnCompare = New System.Windows.Forms.Button()
         Me.ChkAutoSelectList = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.BtnDebug = New System.Windows.Forms.CheckBox()
+        Me.ChkDebug = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'BtnListIO
@@ -91,25 +91,25 @@ Partial Class F_Advanced
         "denoted as ""Selected"".")
         Me.ChkAutoSelectList.UseVisualStyleBackColor = True
         '
-        'BtnDebug
+        'ChkDebug
         '
-        Me.BtnDebug.AutoSize = True
-        Me.BtnDebug.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnDebug.Location = New System.Drawing.Point(13, 248)
-        Me.BtnDebug.Name = "BtnDebug"
-        Me.BtnDebug.Size = New System.Drawing.Size(169, 22)
-        Me.BtnDebug.TabIndex = 6
-        Me.BtnDebug.Text = "Enable debug popups"
-        Me.ToolTip1.SetToolTip(Me.BtnDebug, "Provides popup dialogs to show information at critical steps (very annoying in op" &
+        Me.ChkDebug.AutoSize = True
+        Me.ChkDebug.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ChkDebug.Location = New System.Drawing.Point(13, 248)
+        Me.ChkDebug.Name = "ChkDebug"
+        Me.ChkDebug.Size = New System.Drawing.Size(169, 22)
+        Me.ChkDebug.TabIndex = 6
+        Me.ChkDebug.Text = "Enable debug popups"
+        Me.ToolTip1.SetToolTip(Me.ChkDebug, "Provides popup dialogs to show information at critical steps (very annoying in op" &
         "eration)")
-        Me.BtnDebug.UseVisualStyleBackColor = True
+        Me.ChkDebug.UseVisualStyleBackColor = True
         '
         'F_Advanced
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(388, 277)
-        Me.Controls.Add(Me.BtnDebug)
+        Me.Controls.Add(Me.ChkDebug)
         Me.Controls.Add(Me.ChkAutoSelectList)
         Me.Controls.Add(Me.BtnCompare)
         Me.Controls.Add(Me.BtnUpdate)
@@ -128,5 +128,5 @@ Partial Class F_Advanced
     Friend WithEvents BtnCompare As Button
     Friend WithEvents ChkAutoSelectList As CheckBox
     Friend WithEvents ToolTip1 As ToolTip
-    Friend WithEvents BtnDebug As CheckBox
+    Friend WithEvents ChkDebug As CheckBox
 End Class

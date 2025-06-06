@@ -2,19 +2,15 @@
 Imports System.Data.SQLite
 
 Public Class F_CompareWithMaster
-    Private bFuture As Boolean
-    Private isLoaded As Boolean = False
     Private T_filesTable As FilesTable
     Private ReadOnly myMsgBox As New DlgMsgBox
 
     Private Sub F_CompareWithMaster_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim isshort As Boolean = My.Settings.SelectedOnly
-
         Dim connection As SQLiteConnection = F_Main.ProjHelpData.GetConnection()
         If connection.State <> ConnectionState.Open Then
             connection.Open()
         End If
-        T_filesTable = New FilesTable(isShort, connection)
+        T_filesTable = New FilesTable(connection)
 
         TxtFolder.Text = My.Settings.MasterFolder
     End Sub

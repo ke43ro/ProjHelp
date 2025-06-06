@@ -6,6 +6,7 @@
   <ShutdownMode>0</ShutdownMode>
   <EnableVisualStyles>true</EnableVisualStyles>
   <AuthenticationMode>0</AuthenticationMode>
+  <SplashScreen>F_Splash</SplashScreen>
   <MinimumSplashScreenDisplayTime>0</MinimumSplashScreenDisplayTime>
   <SaveMySettingsOnExit>true</SaveMySettingsOnExit>
   <HighDpiMode>0</HighDpiMode>

@@ -22,19 +22,16 @@ Partial Class F_CompareWithMaster
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(F_CompareWithMaster))
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.BtnBrowse = New System.Windows.Forms.Button()
         Me.TxtFolder = New System.Windows.Forms.TextBox()
         Me.BtnCompare = New System.Windows.Forms.Button()
-        Me.T_filesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.BtnCompareFile = New System.Windows.Forms.Button()
         Me.TxtCompareFile = New System.Windows.Forms.TextBox()
         Me.LstResults = New System.Windows.Forms.ListBox()
-        CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TextBox1
@@ -42,18 +39,18 @@ Partial Class F_CompareWithMaster
         Me.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TextBox1.Enabled = False
         Me.TextBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox1.Location = New System.Drawing.Point(12, 14)
+        Me.TextBox1.Location = New System.Drawing.Point(12, 3)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.ReadOnly = True
-        Me.TextBox1.Size = New System.Drawing.Size(776, 66)
+        Me.TextBox1.Size = New System.Drawing.Size(776, 98)
         Me.TextBox1.TabIndex = 1
         Me.TextBox1.Text = resources.GetString("TextBox1.Text")
         '
         'BtnBrowse
         '
         Me.BtnBrowse.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnBrowse.Location = New System.Drawing.Point(609, 95)
+        Me.BtnBrowse.Location = New System.Drawing.Point(609, 106)
         Me.BtnBrowse.Name = "BtnBrowse"
         Me.BtnBrowse.Size = New System.Drawing.Size(179, 25)
         Me.BtnBrowse.TabIndex = 32
@@ -64,7 +61,7 @@ Partial Class F_CompareWithMaster
         '
         Me.TxtFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtFolder.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtFolder.Location = New System.Drawing.Point(13, 96)
+        Me.TxtFolder.Location = New System.Drawing.Point(13, 107)
         Me.TxtFolder.Name = "TxtFolder"
         Me.TxtFolder.Size = New System.Drawing.Size(580, 24)
         Me.TxtFolder.TabIndex = 31
@@ -73,16 +70,12 @@ Partial Class F_CompareWithMaster
         'BtnCompare
         '
         Me.BtnCompare.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnCompare.Location = New System.Drawing.Point(319, 161)
+        Me.BtnCompare.Location = New System.Drawing.Point(319, 172)
         Me.BtnCompare.Name = "BtnCompare"
         Me.BtnCompare.Size = New System.Drawing.Size(161, 33)
         Me.BtnCompare.TabIndex = 33
         Me.BtnCompare.Text = "Compare"
         Me.BtnCompare.UseVisualStyleBackColor = True
-        '
-        'T_filesBindingSource
-        '
-        Me.T_filesBindingSource.DataMember = "t_files"
         '
         'OpenFileDialog1
         '
@@ -92,7 +85,7 @@ Partial Class F_CompareWithMaster
         'BtnCompareFile
         '
         Me.BtnCompareFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnCompareFile.Location = New System.Drawing.Point(609, 125)
+        Me.BtnCompareFile.Location = New System.Drawing.Point(609, 136)
         Me.BtnCompareFile.Name = "BtnCompareFile"
         Me.BtnCompareFile.Size = New System.Drawing.Size(179, 25)
         Me.BtnCompareFile.TabIndex = 35
@@ -103,7 +96,7 @@ Partial Class F_CompareWithMaster
         '
         Me.TxtCompareFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtCompareFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtCompareFile.Location = New System.Drawing.Point(13, 126)
+        Me.TxtCompareFile.Location = New System.Drawing.Point(13, 137)
         Me.TxtCompareFile.Name = "TxtCompareFile"
         Me.TxtCompareFile.Size = New System.Drawing.Size(580, 24)
         Me.TxtCompareFile.TabIndex = 34
@@ -115,7 +108,7 @@ Partial Class F_CompareWithMaster
         Me.LstResults.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LstResults.FormattingEnabled = True
         Me.LstResults.ItemHeight = 18
-        Me.LstResults.Location = New System.Drawing.Point(13, 205)
+        Me.LstResults.Location = New System.Drawing.Point(13, 213)
         Me.LstResults.Name = "LstResults"
         Me.LstResults.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.LstResults.Size = New System.Drawing.Size(775, 200)
@@ -135,7 +128,6 @@ Partial Class F_CompareWithMaster
         Me.Controls.Add(Me.TextBox1)
         Me.Name = "F_CompareWithMaster"
         Me.Text = "CompareWithMaster"
-        CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -145,7 +137,6 @@ Partial Class F_CompareWithMaster
     Friend WithEvents BtnBrowse As Button
     Friend WithEvents TxtFolder As TextBox
     Friend WithEvents BtnCompare As Button
-    Friend WithEvents T_filesBindingSource As BindingSource
     Friend WithEvents OpenFileDialog1 As OpenFileDialog
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
     Friend WithEvents BtnCompareFile As Button

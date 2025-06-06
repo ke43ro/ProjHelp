@@ -1,18 +1,17 @@
-﻿Imports System.Runtime.CompilerServices
-Imports System.Text.RegularExpressions
+﻿Imports System.Deployment.Application
 Imports LibVLCSharp.Shared
 
 Partial Class F_Main
     Friend isDebug As Boolean
+    Friend isAutoShort As Boolean
+    Friend ProjHelpData As New PHServer
+
     Private ReadOnly PlayList As New PlayList
+    Private ReadOnly myMsgBox As New DlgMsgBox
     Private isShort As Boolean = False
-    Private isAutoShort As Boolean
     Private myStatus As String = "Loading"
     Private T_filesTable As FilesTable
-    Private ReadOnly myMsgBox As New DlgMsgBox
     Private PrefDisplay As Screen
-
-    Friend ProjHelpData As New PHServer
 
     Public Sub New()
         InitializeComponent()
@@ -38,10 +37,11 @@ Partial Class F_Main
             Exit Sub
         End If
 
-        Dim szVersion As String = Environment.GetEnvironmentVariable("ClickOnce_CurrentVersion")
-        If szVersion Is Nothing Then
-            LblVersion.Text = "Version 2.0.0.3 Proto"
-            szVersion = "2.0.0.3"
+        Dim szVersion As String = GetPublishVersion()
+        'Environment.GetEnvironmentVariable("ClickOnce_CurrentVersion")
+        If szVersion = "Proto" Then
+            LblVersion.Text = "Version 2.0.0.6 Proto"
+            szVersion = "2.0.0.6"
         Else
             LblVersion.Text = "Version " & szVersion
         End If
@@ -74,6 +74,16 @@ Partial Class F_Main
         TxtSearch.Focus()
     End Sub
 
+    Private Function GetPublishVersion() As String
+        If ApplicationDeployment.IsNetworkDeployed Then
+            Dim ver = ApplicationDeployment.CurrentDeployment.CurrentVersion
+            Return $"{ver.Major}.{ver.Minor}.{ver.Build}.{ver.Revision}"
+        Else
+            ' Not ClickOnce deployed, fallback to assembly version or custom string
+            Return "Proto"
+        End If
+    End Function
+
     Private Sub SetDisplay()
         Dim myScreen As Screen = Nothing
 
@@ -82,10 +92,12 @@ Partial Class F_Main
             myScreen = Screen.AllScreens(0)
         Else
             For Each thisScreen In Screen.AllScreens
-                'szTemp = "Top: " + thisScreen.Bounds.Top.ToString + "; Left: " + thisScreen.Bounds.Left.ToString +
-                ' "; Height: " + thisScreen.Bounds.Height.ToString + "; Width: " + thisScreen.Bounds.Width.ToString +
-                ' "; Location: " + thisScreen.Bounds.Location.ToString & "; Prim: " & thisScreen.Primary
-                'myMsgBox.Show(szTemp)
+                If isDebug Then
+                    Dim szTemp = "Top: " + thisScreen.Bounds.Top.ToString + "; Left: " + thisScreen.Bounds.Left.ToString +
+                     "; Height: " + thisScreen.Bounds.Height.ToString + "; Width: " + thisScreen.Bounds.Width.ToString +
+                     "; Location: " + thisScreen.Bounds.Location.ToString & "; Prim: " & thisScreen.Primary
+                    myMsgBox.Show(szTemp)
+                End If
 
                 If thisScreen.Primary = False Then
                     myScreen = thisScreen
@@ -143,10 +155,16 @@ Partial Class F_Main
                 DoUpdates = "No Action: Initial Installation"
             Else
                 Select Case priorVersion
+                    Case "0"
+                        ' use db to avoid "unused" warning
+                        DoUpdateDummy("dummy", db)
+                        DoUpdates = "No Action: Dummy|2.0.0.1"
+
                     Case ""
                         ' Initial run
-                        DoUpdates = "No Action: First run"
+                        DoUpdates = "No Action: First run|2.0.0.1"
 
+                        ' Sample of case code saved from PPLink
                         'Case < "001.004.000.036"
                         '    Dim cmd1 As New SqlCommand("use ProHelp", connection)
                         '    Dim cmd2 As New SqlCommand("update t_files set last_dt = create_dt where last_dt is null", connection)
@@ -154,9 +172,9 @@ Partial Class F_Main
                         '    cmd2.ExecuteNonQuery()
                         '    DoUpdates = "Success: Upgraded t_files.last_dt - never null|1.4.0.36"
 
-                        '    'Case = "001.005.000.053"
+                        'Case = "001.005.000.053"
                         '    ' NOP - affects test bed only
-                        '    ' DoUpdates = "No Action: No upgrade necessary|1.5.0.53"
+                        '    DoUpdates = "No Action: No upgrade necessary|1.5.0.53"
 
                         'Case < "001.006.000.055"
                         '    If DoUpdate1_6_0_55(connection) = True Then
@@ -174,6 +192,10 @@ Partial Class F_Main
             DoUpdates = "Failed:" & ex.Message
         End Try
     End Function
+
+    Private Sub DoUpdateDummy(flag As String, db As PHServer)
+        Exit Sub
+    End Sub
 
     ' Sample of update routine saved from PPLink
     'Private Function DoUpdate1_6_0_55(connection As SqlConnection) As Boolean
@@ -690,7 +712,9 @@ End Class
 
 'Version number
 'Z.Y.X.W - Z.Y.X is major version.minor version.build; W is VS publish number.  Missing publish numbers were used in testing
-'2.0.0.2    Fixed runtime issue: not able to find SQLite.Interop.dll
+'2.0.0.6    Amended documentation to match the behaviour of ProjHelp
+'2.0.0.5    Tidy up, add splash screen, icon
+'2.0.0.3    Fixed runtime issue: not able to find SQLite.Interop.dll
 '2.0.0.1    Fixed installation issue with manifest file
 '2.0.0.0    First Version of full merged the ad hoc file showing feature with the lyrics database management
 '           Using SQLite instead of SQL Server

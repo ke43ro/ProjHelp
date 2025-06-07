@@ -2,14 +2,16 @@
 
 Partial Class F_FillTables
     Private nMatched As Integer, nMissing As Integer
-    Private szFolder As String = ""
+    Private szFolder As String
+    Private pkleaFormat As Boolean
     Private iFilesStart, iFilesEnd As Integer
     Private isShort As Boolean = False
     Private ReadOnly isDebug As Boolean = My.Settings.Debug
     Private T_filesTable As FilesTable
     Private ReadOnly myMsgBox As New DlgMsgBox
 
-    Friend Sub LoadFolder(szFolderIn As String)
+    Friend Sub LoadFolder(szFolderIn As String, pkleaForm As Boolean)
+        pkleaFormat = pkleaForm
         szFolder = szFolderIn
         txtFolder.Text = szFolder
     End Sub
@@ -22,7 +24,6 @@ Partial Class F_FillTables
         End If
 
         T_filesTable = New FilesTable(connection, InclInActive:=True)
-        'T_filesTable.LoadAll()
         T_filesDataGridView.DataSource = T_filesTable
         T_filesTable.SetDGProperties(T_filesDataGridView)
         iFilesStart = T_filesTable.Count()
@@ -62,32 +63,17 @@ Partial Class F_FillTables
         txtResults.Text = txtResults.Text & vbCrLf & "Loading file records into the Table"
         CheckFiles()
 
-        Dim AllDirs(30) As String, NextDir As String, i As Integer
-        i = 0
-        NextDir = Dir(szFolder & "\*", 16)
-
-        While NextDir <> ""
-            Select Case NextDir
-                Case ".", ".."
-                Case Else
-                    If Len(NextDir) = 1 Then
-                        AllDirs(i) = szFolder & "\" & NextDir
-                        i += 1
-                    End If
-            End Select
-            NextDir = Dir()
-        End While
-
-        If i = 0 Then
-            myMsgBox.Show("There are no alpha folders here:" & vbCrLf &
-                szFolder & vbCrLf & "Please locate a Parklea-type songs MASTERS folder",
-                "Finding the songs", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+        If pkleaFormat Then
+            txtResults.Text = txtResults.Text & vbCrLf & "Loading from Parklea-type MASTERS folder"
+            txtResults.Text = txtResults.Text & vbCrLf & "Searching for alpha folders in: " & szFolder
+            Dim allDirs As List(Of String) = GetFoldersPklea(szFolder)
+            GetFilesPklea(allDirs)       ' modifies base table
         Else
-            GetFiles(AllDirs)       ' modifies base table
-            'T_filesTable.AcceptChanges()
+            txtResults.Text = txtResults.Text & vbCrLf & "Loading from Hierarchical-type folder"
+            txtResults.Text = txtResults.Text & vbCrLf & "Searching for folders in: " & szFolder
+            GetFilesHier(szFolder)       ' modifies base table
         End If
 
-        'T_filesDataGridView.DataSource = T_filesTable
         T_filesDataGridView.Update()
 
         If isDebug Then MyMsgBox.Show("After getting files, records: adapter=" & T_filesTable.Count &
@@ -96,7 +82,6 @@ Partial Class F_FillTables
             " file records loaded"
         Cursor = Cursors.Default
         BtnClose.Enabled = True
-        'iFilesStart = ProHelpDataSet.t_files.Count
     End Sub
 
     Private Sub BtnEmpty_Click(sender As Object, e As EventArgs) Handles BtnEmpty.Click
@@ -139,23 +124,51 @@ Partial Class F_FillTables
         Close()
     End Sub
 
-    Private Sub GetFiles(arPaths As Object)
+    Private Function GetFoldersPklea(szFolder As String) As List(Of String)
+        ' This function is used to list the Parklea format folders
+        Dim myList As New List(Of String)
+        Dim NextDir As String
+        Dim i As Integer = 0
+
+        NextDir = Dir(szFolder & "\*", 16) ' 16 = directories only
+        While NextDir <> ""
+            Select Case NextDir
+                Case ".", ".."
+                Case Else
+                    If Len(NextDir) = 1 Then
+                        myList.Add(szFolder & "\" & NextDir)
+                        i += 1
+                    End If
+            End Select
+            NextDir = Dir()
+        End While
+
+        If i = 0 Then
+            myMsgBox.Show("There are no alpha folders here:" & vbCrLf &
+                szFolder & vbCrLf & "Please locate a Parklea-type songs MASTERS folder",
+                "Finding the songs", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+        End If
+        Return myList
+    End Function
+
+    Private Sub GetFilesPklea(arPaths As List(Of String))
+        ' This subroutine is used to get the files from Parklea format folders
         Dim szPath As String, NextFile As String
         Dim searchView As New DataView(T_filesTable)
         Dim nNew As Integer = 0, LookUp As Integer, nAlready As Integer = 0
 
-        txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files..."
+        txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files into my List..."
         searchView.Sort = "f_name"
 
         For Each szPath In arPaths
             NextFile = Dir(szPath & "\*.*", 0)
             While NextFile <> "" ' j <4
-                Select Case NextFile.Substring(NextFile.Length - 4, 4)
-                    Case ".ppt", "pptx", ".PPT", "PPTX"
+                Select Case NextFile.Substring(NextFile.Length - 4, 4).ToLower()
+                    Case ".ppt", "pptx"
                         LookUp = searchView.Find(NextFile)
                         If LookUp < 0 Then
                             nNew += 1
-                            T_filesTable.Insert(NextFile, szPath, True)
+                            T_filesTable.Insert(NextFile, szPath, False)
                         Else
                             nAlready += 1
                         End If
@@ -170,19 +183,49 @@ Partial Class F_FillTables
         txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
     End Sub
 
+    Private Sub GetFilesHier(rootFolder As String)
+        ' This subroutine is used to get the files from the specified folders
+        MessageBox.Show("This feature is not yet implemented for Hierarchical folders", "Not Implemented", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Exit Sub
+
+        Dim szPath As String, NextFile As String, arPaths As String()
+        Dim searchView As New DataView(T_filesTable)
+        Dim nNew As Integer = 0, LookUp As Integer, nAlready As Integer = 0
+        txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files into my List..."
+        searchView.Sort = "f_name"
+        For Each szPath In arPaths
+            NextFile = Dir(szPath & "\*.*", 0)
+            While NextFile <> "" ' j <4
+                Select Case NextFile.Substring(NextFile.Length - 4, 4).ToLower()
+                    Case ".mp3", ".wav", ".wma", ".mp4", ".avi", ".mkv", ".flv", ".mov"
+                        LookUp = searchView.Find(NextFile)
+                        If LookUp < 0 Then
+                            nNew += 1
+                            T_filesTable.Insert(NextFile, szPath, True)
+                        Else
+                            nAlready += 1
+                        End If
+                End Select
+                NextFile = Dir()
+            End While
+        Next szPath
+        iFilesEnd = nNew + nAlready
+        T_filesTable.LoadAll(InclInActive:=True)
+        T_filesDataGridView.Update()
+        txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
+    End Sub
+
     Private Sub CheckFiles()
         Dim FullName As String
         Dim fViewRow As DataRowView
 
-        'T_filesTable = New FilesTable(False, F_Main.ProjHelpData.GetConnection)
-        'T_filesDataGridView.DataSource = T_filesTable
-        'T_filesTable.LoadAll(False)  ' False == ignore selection flag
         Dim filesView As New DataView(T_filesTable)
 
-        txtResults.Text = txtResults.Text & vbCrLf & "Checking File List..."
+        txtResults.Text = txtResults.Text & vbCrLf & "Checking my File List against the disk contents..."
         If filesView.Count() = 0 Then
             nMatched = 0
             nMissing = 0
+            txtResults.Text = txtResults.Text & vbCrLf & "No files in my list"
         Else
             txtResults.Text = txtResults.Text & vbCrLf & "Files record has " & filesView.Count() & " rows"
             filesView.Sort = "f_name, f_path"
@@ -213,12 +256,12 @@ Partial Class F_FillTables
                     fViewRow.EndEdit()
                 End If
             Next
+            txtResults.Text = txtResults.Text & vbCrLf & "Checked Files: " & nMissing & " Missing; " & nMatched & " Matched"
         End If
 
         T_filesTable.LoadAll(InclInActive:=True)
         If isDebug Then MyMsgBox.Show("After checking files, records: adapter=" & T_filesTable.Count &
                                    "; view=" & T_filesDataGridView.RowCount)
 
-        txtResults.Text = txtResults.Text & vbCrLf & "Checked Files: " & nMissing & " Missing; " & nMatched & " Matched"
     End Sub
 End Class

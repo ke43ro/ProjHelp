@@ -26,7 +26,6 @@ Partial Class F_Main
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(F_Main))
         Me.LBPlayList = New System.Windows.Forms.ListBox()
-        Me.T_filesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.TxtSearch = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
@@ -48,7 +47,6 @@ Partial Class F_Main
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.LblVersion = New System.Windows.Forms.Label()
         Me.ChkPause = New System.Windows.Forms.CheckBox()
-        CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.T_filesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -64,10 +62,6 @@ Partial Class F_Main
         Me.LBPlayList.TabIndex = 0
         Me.LBPlayList.TabStop = False
         Me.ToolTip1.SetToolTip(Me.LBPlayList, "This is the list of songs and files that will be played ")
-        '
-        'T_filesBindingSource
-        '
-        Me.T_filesBindingSource.DataMember = "t_files"
         '
         'TxtSearch
         '
@@ -318,7 +312,6 @@ Partial Class F_Main
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "F_Main"
         Me.Text = "Projection Helper"
-        CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.T_filesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -326,7 +319,6 @@ Partial Class F_Main
     End Sub
 
     Friend WithEvents LBPlayList As ListBox
-    Friend WithEvents T_filesBindingSource As BindingSource
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents TxtSearch As TextBox
     Friend WithEvents Label2 As Label

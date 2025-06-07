@@ -43,15 +43,20 @@
         Cursor = Cursors.WaitCursor
         Dim FillForm As New F_FillTables
         Dim result As DialogResult
+        Dim dirFormat As Boolean = False ' true if root folder is "MASTERS"
 
         If Dir(TxtFolder.Text, vbDirectory) = "" Then
             Cursor = Cursors.Default
-            MyMsgBox.Show("Please choose a valid folder name")
+            myMsgBox.Show("Please choose a valid folder name")
             Exit Sub
         End If
 
+        ' check if the folder is in the PKLEA format
+        If InStr(TxtFolder.Text, "MASTERS") > 0 Then
+            dirFormat = True
+        End If
         ' open FillForm and set the folder name
-        FillForm.LoadFolder(TxtFolder.Text)
+        FillForm.LoadFolder(TxtFolder.Text, dirFormat)
         Try
             result = FillForm.ShowDialog()
 
@@ -63,7 +68,7 @@
 
         If result <> DialogResult.OK Then
             Cursor = Cursors.Default
-            MyMsgBox.Show("Projection Helper cannot work without the tables filled")
+            myMsgBox.Show("Projection Helper will be fully operational without the tables filled")
             Exit Sub
         End If
 

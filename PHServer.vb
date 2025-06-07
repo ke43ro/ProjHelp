@@ -277,6 +277,7 @@ Public Class FilesTable
 
 
     Public Sub SetDGProperties(dg As DataGridView, Optional NoEdit As Boolean = True)
+        dg.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
         dg.AutoGenerateColumns = True
         dg.AllowUserToAddRows = False
         dg.AllowUserToDeleteRows = False
@@ -286,16 +287,26 @@ Public Class FilesTable
         dg.MultiSelect = False
         dg.RowHeadersVisible = False
         dg.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dg.Columns(0).Width = IIf(NoEdit, 5, 50)     ' file_no
-        dg.Columns(1).Width = 200   ' f_name
-        dg.Columns(2).Width = 200   ' f_path
-        dg.Columns(3).Width = 200   ' f_altname
-        dg.Columns(4).Width = 20    ' isshortlist
-        dg.Columns(5).Width = 5     ' create_dt
-        dg.Columns(6).Width = 5     ' last_dt
-        dg.Columns(7).Width = 5     ' last_action
-        dg.Columns(8).Width = 20    ' is_active
-        dg.Columns(9).Width = 200   ' s_search
+        'If NoEdit Then
+        dg.Columns("file_no").Visible = Not NoEdit
+        'End If
+        dg.Columns("file_no").Width = 50
+        dg.Columns("file_no").HeaderText = "#"
+        dg.Columns("f_name").Width = 200
+        dg.Columns("f_name").HeaderText = "PPT Name"
+        dg.Columns("f_path").Width = 200
+        dg.Columns("f_path").HeaderText = "Folder"
+        dg.Columns("f_altname").Width = 200
+        dg.Columns("f_altname").HeaderText = "Other Name"
+        dg.Columns("isShortList").Width = 35
+        dg.Columns("isShortList").HeaderText = "ShortL"
+        dg.Columns("create_dt").Visible = False
+        dg.Columns("last_dt").Visible = False
+        dg.Columns("last_action").Visible = False
+        dg.Columns("isActive").Width = 35
+        dg.Columns("isActive").HeaderText = "Active"
+        dg.Columns("s_search").Width = 200
+        dg.Columns("s_search").HeaderText = "Search String"
         dg.DefaultCellStyle.Font = New Font("Microsoft Sans Serif", 10.5, FontStyle.Regular)
     End Sub
 
@@ -441,6 +452,7 @@ Public Class PlaylistsTable
 
 
     Public Sub SetDGProperties(dg As DataGridView, Optional NoEdit As Boolean = False)
+        dg.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
         dg.AutoGenerateColumns = True
         dg.AllowUserToAddRows = True
         dg.AllowUserToDeleteRows = True
@@ -450,9 +462,12 @@ Public Class PlaylistsTable
         dg.MultiSelect = False
         dg.RowHeadersVisible = False
         dg.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dg.Columns(0).Width = 30    ' list_no
-        dg.Columns(1).Width = 150   ' play_dt
-        dg.Columns(2).Width = 250   ' l_name
+        dg.Columns("list_no").Width = 30
+        dg.Columns("list_no").HeaderText = "List No"
+        dg.Columns("play_dt").Width = 150
+        dg.Columns("play_dt").HeaderText = "Show Time"
+        dg.Columns("l_name").Width = 250
+        dg.Columns("l_name").HeaderText = "Playlist Name"
         dg.DefaultCellStyle.Font = New Font("Microsoft Sans Serif", 10.5, FontStyle.Regular)
     End Sub
 

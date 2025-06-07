@@ -143,7 +143,7 @@ Partial Class DlgLoadList
         Me.TxtStatus.Size = New System.Drawing.Size(627, 24)
         Me.TxtStatus.TabIndex = 8
         Me.ToolTip1.SetToolTip(Me.TxtStatus, "This is a reminder of how many titles you have iin the unnamed list back on the m" &
-        "ain screen.")
+        "ain screen and how man y in the selected named play list")
         '
         'ChkFuture
         '
@@ -180,7 +180,7 @@ Partial Class DlgLoadList
         Me.Name = "DlgLoadList"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Load or Save a Play List"
+        Me.Text = "Manage Play Lists"
         Me.TableLayoutPanel1.ResumeLayout(False)
         CType(Me.T_playlistsDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)

@@ -1,5 +1,5 @@
 ﻿Imports System.Data.SQLite
-Imports System.Runtime.CompilerServices
+Imports System.Runtime.Remoting.Contexts
 
 Public Class DlgLoadList
     Private isLoaded As Boolean = False
@@ -7,7 +7,11 @@ Public Class DlgLoadList
     Private T_playlistsTable As PlaylistsTable
     Private Tx_playlist2FileTable As Tx_playlistTable
     Private isShort As Boolean = False
+    Private songtext As String
     Private ReadOnly myMsgBox As New DlgMsgBox
+    Private ReadOnly hdrText1 As String = "There {0} in the current unnamed Play List."
+    Private ReadOnly hdrText2 As String = "There {0} in the current unnamed Play List " &
+        "and {1} in the selected Play List."
 
     Friend Sub GetList(ByRef myList As ListBox)
         For Each listItem In LstQueue.Items
@@ -28,7 +32,6 @@ Public Class DlgLoadList
 
     Private Sub DlgLoadList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim nSongs As Integer = LstQueue.Items.Count
-        Dim songtext As String
         isShort = My.Settings.SelectedOnly
         Dim connection As SQLiteConnection = F_Main.ProjHelpData.GetConnection()
         If connection.State <> ConnectionState.Open Then
@@ -43,7 +46,7 @@ Public Class DlgLoadList
             Case Else
                 songtext = "are " & nSongs & " songs"
         End Select
-        TxtStatus.Text = "There " & songtext & " in the current unnamed Play List"
+        TxtStatus.Text = String.Format(hdrText1, songtext)
         ChkFuture.Checked = True
 
         Tx_playlist2FileTable = New Tx_playlistTable(connection)
@@ -179,7 +182,7 @@ Public Class DlgLoadList
     Private Sub TplaylistsDataGridView_RowStateChanged(sender As Object, e As DataGridViewRowStateChangedEventArgs) Handles T_playlistsDataGridView.RowStateChanged
         If e.StateChanged = DataGridViewElementStates.Selected Then
             Dim iCount As Integer = Tx_playlist2FileTable.Count(e.Row.Cells(0).Value)
-            TxtStatus.Text = "There are " & iCount & " items in this Play List"
+            TxtStatus.Text = String.Format(hdrText2, songText, iCount)
         End If
     End Sub
 End Class

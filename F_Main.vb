@@ -38,7 +38,6 @@ Partial Class F_Main
         End If
 
         Dim szVersion As String = GetPublishVersion()
-        'Environment.GetEnvironmentVariable("ClickOnce_CurrentVersion")
         If szVersion = "Proto" Then
             LblVersion.Text = "Version 2.0.0.6 Proto"
             szVersion = "2.0.0.6"
@@ -573,8 +572,21 @@ Partial Class F_Main
         End If
 
         T_filesDataGridView.Rows(iRow + iChange).Selected = True
+        ScrollTable(T_filesDataGridView)
     End Sub
 
+    Private Sub ScrollTable(dgv As DataGridView)
+        Dim firstRow As Integer = dgv.FirstDisplayedScrollingRowIndex
+        Dim SelRow As Integer = dgv.SelectedRows(0).Index
+        Dim DispRows As Integer = dgv.DisplayedRowCount(False)
+        If SelRow < firstRow Then
+            firstRow = SelRow
+        ElseIf SelRow > firstRow + dgv.DisplayedRowCount(False) - 1 Then
+            firstRow = SelRow - dgv.DisplayedRowCount(False) + 1
+        End If
+        If firstRow < 0 Then firstRow = 0
+        dgv.FirstDisplayedScrollingRowIndex = firstRow
+    End Sub
     Private Sub TxtSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearch.KeyDown
         Select Case e.KeyCode
             Case Keys.Enter
@@ -712,9 +724,10 @@ End Class
 
 'Version number
 'Z.Y.X.W - Z.Y.X is major version.minor version.build; W is VS publish number.  Missing publish numbers were used in testing
+'2.0.0.7    UI tweaks, added stub for hierarchical file management
 '2.0.0.6    Amended documentation to match the behaviour of ProjHelp
 '2.0.0.5    Tidy up, add splash screen, icon
 '2.0.0.3    Fixed runtime issue: not able to find SQLite.Interop.dll
 '2.0.0.1    Fixed installation issue with manifest file
-'2.0.0.0    First Version of full merged the ad hoc file showing feature with the lyrics database management
+'2.0.0.0    First Version of full merger of the ad hoc file showing feature with the lyrics database management
 '           Using SQLite instead of SQL Server

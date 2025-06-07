@@ -79,6 +79,7 @@ Partial Class DlgMsgBox
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.ReadOnly = True
+        Me.TextBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.TextBox1.Size = New System.Drawing.Size(549, 74)
         Me.TextBox1.TabIndex = 1
         Me.TextBox1.TabStop = False

@@ -65,6 +65,7 @@ Public Class DlgLoadList
         Dim searchView As DataView = Tx_playlist2FileTable.DefaultView
         Dim ListRows() As DataRowView
         Dim iListNo As Integer, bRowSel As Boolean = True
+        Dim szFName As String
 
         T_playlistsTable.AcceptChanges()
         If T_playlistsDataGridView.SelectedRows.Count = 0 Then
@@ -98,8 +99,15 @@ Public Class DlgLoadList
         filesView.Sort = "file_no"
         Dim filesRow() As DataRowView
         For Each Row In ListRows
-            filesRow = filesView.FindRows(Row("FILE_NO"))
-            LstQueue.Items.Add(Row("FILE_NO") & vbTab & filesRow(0)("F_NAME"))
+            If Row("FILE_NO") = -1 Then
+                szFName = System.IO.Path.GetFileName(Row("FULL_PATH"))
+                LstQueue.Items.Add(Row("FILE_NO") & vbTab & szFName &
+                               vbTab & Row("FULL_PATH"))
+            Else
+                filesRow = filesView.FindRows(Row("FILE_NO"))
+                LstQueue.Items.Add(Row("FILE_NO") & vbTab & filesRow(0)("F_NAME") &
+                               vbTab & " ")
+            End If
         Next
 
         DialogResult = DialogResult.Yes ' indicates a "Load"

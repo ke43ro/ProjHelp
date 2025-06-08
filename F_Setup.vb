@@ -3,8 +3,6 @@
     Private ReadOnly myMsgBox As New DlgMsgBox
 
     Private Sub F_SetUp_OnLoad(sender As Object, e As EventArgs) Handles MyBase.Load
-        'If Me.DesignMode Then Return
-
         Dim szFolder As String = My.Settings.MasterFolder
         If szFolder <> "" Then
             TxtFolder.Text = szFolder.Replace("%DOCUMENTS%", My.Computer.FileSystem.SpecialDirectories.MyDocuments)

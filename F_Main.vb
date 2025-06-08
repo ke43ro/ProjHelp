@@ -18,7 +18,7 @@ Partial Class F_Main
         ' Other initialization
     End Sub
 
-    ' See the following secrtions for fastwer access to the code
+    ' Search for the following secrtions for faster access to the code
     ' *** Section Form Load, Updates, set up ***
     ' *** Section Controls and supports ***
     ' *** Section Control Interactions ***
@@ -39,8 +39,8 @@ Partial Class F_Main
 
         Dim szVersion As String = GetPublishVersion()
         If szVersion = "Proto" Then
-            LblVersion.Text = "Version 2.0.0.6 Proto"
-            szVersion = "2.0.0.6"
+            LblVersion.Text = "Version 2.0.0.7 Proto"
+            szVersion = "2.0.0.7"
         Else
             LblVersion.Text = "Version " & szVersion
         End If
@@ -55,9 +55,9 @@ Partial Class F_Main
         End If
 
         isShort = My.Settings.SelectedOnly
-        'If isShort IsNot (Nothing) Then
         ChkShortList.Checked = isShort
-        'End If
+
+        ' find the secondary display if connected
         SetDisplay()
 
         isAutoShort = My.Settings.AutoShortList
@@ -86,7 +86,6 @@ Partial Class F_Main
     Private Sub SetDisplay()
         Dim myScreen As Screen = Nothing
 
-        'myMsgBox.Show("Checking screens [" & Screen.AllScreens.Length & "]")
         If Screen.AllScreens.Length = 1 Then
             myScreen = Screen.AllScreens(0)
         Else
@@ -148,7 +147,7 @@ Partial Class F_Main
 
     Private Function DoUpdates(priorVersion As String, db As PHServer) As String
         Try
-            'If szDebug = "Yes" Then MyMsgBox.Show("priorVersion is " & priorVersion)
+            If isDebug Then myMsgBox.Show("priorVersion is " & priorVersion)
             If priorVersion = "" Then
                 ' Initial installation. Latest version of database will have been installed through Set Up
                 DoUpdates = "No Action: Initial Installation"
@@ -249,9 +248,6 @@ Partial Class F_Main
     Private Function CanonizeVersion(szVersion As String) As String
         Dim szTemp As String = ""
         Dim iLoop As Integer = 0
-
-        'CanonizeVersion = szVersion
-
         Dim iIndex As Integer = szVersion.IndexOf(" Proto")
 
         If iIndex > 0 Then
@@ -283,7 +279,7 @@ Partial Class F_Main
         Dim iSongNo As Integer
         Dim szFileName As String, szFullPath As String
 
-        '-- get file_no
+        ' get file_no
         Dim bRowSel As Boolean = True
 
         If T_filesDataGridView.SelectedRows.Count = 0 Then
@@ -304,7 +300,7 @@ Partial Class F_Main
         szFullPath = T_filesDataGridView.SelectedRows(0).Cells(2).Value
         If isAutoShort Then AddToShortList(iSongNo)
 
-        '-- Add the new row
+        ' Add the new row
         LBPlayList.Items.Add(iSongNo & vbTab & szFileName & vbTab & " ")
     End Sub
 
@@ -359,7 +355,7 @@ Partial Class F_Main
         End If
 
         MyBase.WindowState = FormWindowState.Minimized
-        PlayList.Run(LBPlayList.Items)
+        PlayList.Run(PrefDisplay, ChkPause.Checked, LBPlayList.Items)
         MyBase.WindowState = FormWindowState.Normal
         TxtSearch.Text = ""
         TxtSearch.Focus()
@@ -401,12 +397,15 @@ Partial Class F_Main
         szFName = T_filesDataGridView.SelectedRows(0).Cells(1).Value
         iFile_no = T_filesDataGridView.SelectedRows(0).Cells(0).Value
         szFullPath = System.IO.Path.Combine(T_filesDataGridView.SelectedRows(0).Cells(2).Value, szFName)
+
         If isAutoShort Then AddToShortList(CInt(iFile_no))
+
         LBInstant.Items.Clear()
         LBInstant.Items.Add(iFile_no.ToString & vbTab & szFName & vbTab & szFullPath)
         MyBase.WindowState = FormWindowState.Minimized
-        PlayList.Run(LBInstant.Items)
+        PlayList.Run(PrefDisplay, ChkPause.Checked, LBInstant.Items)
         MyBase.WindowState = FormWindowState.Normal
+
         TxtSearch.Text = ""
         TxtSearch.Focus()
     End Sub
@@ -418,14 +417,18 @@ Partial Class F_Main
 
         szListItem = LBPlayList.SelectedItems(0)
         iFileNo = CInt(szListItem.Substring(0, szListItem.IndexOf(vbTab)))
-        If isAutoShort Then AddToShortList(iFileNo)
+        If iFileNo > 0 Then
+            If isAutoShort Then AddToShortList(iFileNo)
+        End If
+
         LBInstant.Items.Clear()
         LBInstant.Items.Add(szListItem)
         MyBase.WindowState = FormWindowState.Minimized
         'MyMsgBox.Show("Playing " & szListItem, "Playing a file",
         '        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        PlayList.Run(LBInstant.Items)
+        PlayList.Run(PrefDisplay, ChkPause.Checked, LBInstant.Items)
         MyBase.WindowState = FormWindowState.Normal
+
         TxtSearch.Text = ""
         TxtSearch.Focus()
     End Sub
@@ -461,8 +464,8 @@ Partial Class F_Main
 
         End Select
 
-        Dim nameIndex As Integer = myPath.LastIndexOf("\")
-        myPath = "-1" & vbTab & myPath.Substring(nameIndex + 1) & vbTab & myPath
+        Dim szFName As String = System.IO.Path.GetFileName(myPath)
+        myPath = "-1" & vbTab & szFName & vbTab & myPath
 
         Return myPath
 
@@ -505,7 +508,7 @@ Partial Class F_Main
                     iIndex += 1
                 End While
                 LBPlayList.Items.Clear()
-                'iIndex = 0
+
                 While szQueue.Count > 0
                     LBPlayList.Items.Add(szQueue.Dequeue)
                 End While
@@ -553,7 +556,6 @@ Partial Class F_Main
 
     Sub TfilesChangeSelection(ByVal iChange As Integer)
         Dim iRow As Integer = 0
-        'Dim iSelected As DataGridViewRow = T_filesDataGridView.SelectedRows(0)
 
         While iRow < T_filesDataGridView.RowCount
             If T_filesDataGridView.SelectedRows.Contains(T_filesDataGridView.Rows(iRow)) Then Exit While
@@ -587,6 +589,7 @@ Partial Class F_Main
         If firstRow < 0 Then firstRow = 0
         dgv.FirstDisplayedScrollingRowIndex = firstRow
     End Sub
+
     Private Sub TxtSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearch.KeyDown
         Select Case e.KeyCode
             Case Keys.Enter
@@ -663,8 +666,11 @@ Partial Class F_Main
         Dim myMediaOptions() As String = {":mouse-events", ":keyboard-events"}
         Dim myUri As New Uri(myPath)
         Dim myMedia = New LibVLCSharp.Shared.Media(libVLC, myUri, myMediaOptions)
+
         myMedia.Parse(MediaParseOptions.ParseLocal)
+
         System.Threading.Thread.Sleep(1000)
+
         If myMedia.Tracks.Length = 0 Then
             Return Nothing
         End If
@@ -724,7 +730,7 @@ End Class
 
 'Version number
 'Z.Y.X.W - Z.Y.X is major version.minor version.build; W is VS publish number.  Missing publish numbers were used in testing
-'2.0.0.7    UI tweaks, added stub for hierarchical file management
+'2.0.0.7    UI tweaks, added stub for hierarchical file management, fix bug in playing drag and drop
 '2.0.0.6    Amended documentation to match the behaviour of ProjHelp
 '2.0.0.5    Tidy up, add splash screen, icon
 '2.0.0.3    Fixed runtime issue: not able to find SQLite.Interop.dll

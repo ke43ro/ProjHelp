@@ -1,7 +1,6 @@
 ﻿
 Imports System.Data.SQLite
 Imports System.Text.RegularExpressions
-'Imports Microsoft.Office.Interop.Word
 
 Public Class PHServer
     ReadOnly SqlCreate As String =
@@ -52,12 +51,11 @@ CREATE TRIGGER [fku_tx_playlist_song_list_no_t_playlists_list_no] BEFORE Update 
 COMMIT;
 "
 
-    ReadOnly location As String = Application.StartupPath  'Environment.GetFolderPath(Environment.SpecialFolder.LocalizedResources)
+    ReadOnly location As String = Application.StartupPath
     ReadOnly fileName As String = "ProjHelpData.db"
     ReadOnly fullPath As String = System.IO.Path.Combine(location, fileName)
     Public connectionString As String = String.Format("Data Source = {0}", fullPath)
     Private sqlConn As New SQLiteConnection
-    'Public TFiles As Files
 
     Public Function ConnectDatabase() As SQLiteConnection
         sqlConn.ConnectionString = connectionString

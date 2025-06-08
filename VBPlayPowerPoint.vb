@@ -3,14 +3,11 @@ Imports Microsoft.Office.Interop.PowerPoint.PpViewType
 
 
 Public Class VBPlayPowerPoint
-    'Public Property PPPres As Microsoft.Office.Interop.PowerPoint.Application
     Private Declare Function SetForegroundWindow Lib "user32" (ByVal hWnd As IntPtr) As Integer
-    'Private ReadOnly myMsgBox As DlgMsgBox = New DlgMsgBox
     Private ReadOnly myMsgBox As New DlgMsgBox
 
     Public Sub Run(Path As String)
         Dim SSWin As SlideShowWindow
-        'Dim szFileName, szFPath As String, i, iFileNo, iIndex As Integer
 
         If Dir(Path) = "" Then
             myMsgBox.Show("Can't find show file " & Path & " on the disk", "Playing a PowerPoint",
@@ -18,14 +15,15 @@ Public Class VBPlayPowerPoint
             Return
         End If
 
-        Dim PPPres = New Microsoft.Office.Interop.PowerPoint.Application
+        Dim PPPres As Application
         Try
+            PPPres = New Application
             PPPres.Visible = True
 
         Catch ex As Exception
             myMsgBox.Show("Error making the PowerPoint window visible. Do you have a licenced copy of MS Office?" &
-                    vbCrLf & "Please contact the programmer with this message:" & vbCrLf & ex.Message & vbCrLf &
-                    ex.StackTrace,
+                    vbCrLf & "Please copy the message below and paste it into an email to the programmer: ke43ro@gmail.com" &
+                    vbCrLf & ex.Message & vbCrLf & ex.StackTrace,
                 "Presentation Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
 
@@ -63,8 +61,8 @@ Public Class VBPlayPowerPoint
 
         Catch ex As Exception
             myMsgBox.Show("Error minimising the PowerPoint window. Do you have a licenced copy of MS Office?" &
-                    vbCrLf & "Please contact the programmer with this message:" & vbCrLf & ex.Message & vbCrLf &
-                    ex.StackTrace,
+                    vbCrLf & "Please copy the message below and paste it into an email to the programmer: ke43ro@gmail.com" &
+                    vbCrLf & ex.Message & vbCrLf & ex.StackTrace,
                 "Presentation Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning)
 
         End Try

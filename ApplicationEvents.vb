@@ -17,7 +17,7 @@ Namespace My
         End Sub
 
         Private Sub Application_ThreadException(sender As Object, e As Threading.ThreadExceptionEventArgs)
-            MyMsgBox.Show("Unhandled UI Exception: " & e.Exception.Message)
+            myMsgBox.Show("Unhandled UI Exception: " & e.Exception.Message)
             ' Optionally log or handle further
         End Sub
 

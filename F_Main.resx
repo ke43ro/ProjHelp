@@ -120,6 +120,16 @@
   <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>11, 18</value>
   </metadata>
+  <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>11, 18</value>
+  </metadata>
+  <data name="Label3.Text" xml:space="preserve">
+    <value>To add items to the play list:
+1. Add song lyrics from the database using the Search pane below.
+2. Drag and drop files from anywhere on the drive.  You can display PowerPoint, Word, PDF or most media types.
+To Edit the Play List: '+' moves selected line down; '-' moves it up, 'DEL' deletes it
+Double click a line in the list to play just that song</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

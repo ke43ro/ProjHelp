@@ -18,7 +18,7 @@ Partial Class F_Main
         ' Other initialization
     End Sub
 
-    ' Search for the following secrtions for faster access to the code
+    ' Search for the following sections for faster access to the code
     ' *** Section Form Load, Updates, set up ***
     ' *** Section Controls and supports ***
     ' *** Section Control Interactions ***
@@ -39,8 +39,8 @@ Partial Class F_Main
 
         Dim szVersion As String = GetPublishVersion()
         If szVersion = "Proto" Then
-            LblVersion.Text = "Version 2.0.0.7 Proto"
-            szVersion = "2.0.0.7"
+            LblVersion.Text = "Version 2.0.0.8 Proto"
+            szVersion = "2.0.0.8"
         Else
             LblVersion.Text = "Version " & szVersion
         End If
@@ -314,7 +314,7 @@ Partial Class F_Main
             filesView.Item(iRow).BeginEdit()
             filesView.Item(iRow)("isShortList") = "Y"
             filesView.Item(iRow).EndEdit()
-            T_filesTable.AcceptChanges()
+            T_filesTable.Update(filesView.Item(iRow))
         End If
     End Sub
 
@@ -391,12 +391,12 @@ Partial Class F_Main
         'If szDebug = "Yes" Then MyMsgBox.Show("ChkShortList_CheckedChanged Done")
     End Sub
 
-    Private Sub Files_DoubleClick(sender As Object, e As EventArgs) Handles T_filesDataGridView.DoubleClick
-        Dim szFName As String, iFile_no As Integer, szFullPath As String
-
-        szFName = T_filesDataGridView.SelectedRows(0).Cells(1).Value
-        iFile_no = T_filesDataGridView.SelectedRows(0).Cells(0).Value
-        szFullPath = System.IO.Path.Combine(T_filesDataGridView.SelectedRows(0).Cells(2).Value, szFName)
+    Private Sub TfilesDataGridView_RunCurrent()
+        Dim rowIndex As Integer = T_filesDataGridView.SelectedRows(0).Index
+        Dim row = T_filesDataGridView.Rows(rowIndex)
+        Dim szFName As String = row.Cells(1).Value
+        Dim iFile_no As Integer = row.Cells(0).Value
+        Dim szFullPath As String = System.IO.Path.Combine(row.Cells(2).Value, szFName)
 
         If isAutoShort Then AddToShortList(CInt(iFile_no))
 
@@ -408,6 +408,15 @@ Partial Class F_Main
 
         TxtSearch.Text = ""
         TxtSearch.Focus()
+    End Sub
+
+    Private Sub TfilesDataGridView_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles T_filesDataGridView.CellEnter
+        If e.RowIndex < 0 Then
+            ' Move focus to first data row if available
+            If T_filesDataGridView.Rows.Count > 0 Then
+                T_filesDataGridView.CurrentCell = T_filesDataGridView.Rows(0).Cells(0)
+            End If
+        End If
     End Sub
 
     Private Sub LBPlayList_DoubleClick(sender As Object, e As EventArgs) Handles LBPlayList.DoubleClick
@@ -599,6 +608,8 @@ Partial Class F_Main
                 TfilesChangeSelection(-1)
             Case Keys.Down
                 TfilesChangeSelection(1)
+            Case Keys.ControlKey, Keys.RControlKey, Keys.LControlKey
+                TfilesDataGridView_RunCurrent()
             Case Else
                 TxtSearch.Focus()
                 Exit Sub
@@ -616,50 +627,50 @@ Partial Class F_Main
 
 
     ' *** Section Play methods ***
-    Private Sub PlayFile(myPath As String)
-        Dim PlayPowerPoint As VBPlayPowerPoint, PlayPDF As VBPlayPDF, PlayWord As VBPlayWord
-        Dim myForm As F_Video
-        Dim myMedia As Media
-        Dim myExtn = GetExtn(myPath)
+    'Private Sub PlayFile(myPath As String)
+    '    Dim PlayPowerPoint As VBPlayPowerPoint, PlayPDF As VBPlayPDF, PlayWord As VBPlayWord
+    '    Dim myForm As F_Video
+    '    Dim myMedia As Media
+    '    Dim myExtn = GetExtn(myPath)
 
-        Select Case myExtn
-            Case ".doc", ".docx"
-                PlayWord = New VBPlayWord
-                PlayWord.Run(myPath, PrefDisplay)
-                PlayWord = Nothing
+    '    Select Case myExtn
+    '        Case ".doc", ".docx"
+    '            PlayWord = New VBPlayWord
+    '            PlayWord.Run(myPath, PrefDisplay)
+    '            PlayWord = Nothing
 
-            Case ".ppt", ".pptx", "pptm"
-                PlayPowerPoint = New VBPlayPowerPoint
-                PlayPowerPoint.Run(myPath)
-                PlayPowerPoint = Nothing
+    '        Case ".ppt", ".pptx", "pptm"
+    '            PlayPowerPoint = New VBPlayPowerPoint
+    '            PlayPowerPoint.Run(myPath)
+    '            PlayPowerPoint = Nothing
 
-            Case ".pdf"
-                PlayPDF = New VBPlayPDF
-                PlayPDF.Run(myPath)
-                PlayPDF = Nothing
+    '        Case ".pdf"
+    '            PlayPDF = New VBPlayPDF
+    '            PlayPDF.Run(myPath)
+    '            PlayPDF = Nothing
 
-            Case Else
-                myMedia = GetMedia(myPath)
-                If myMedia Is Nothing Then
-                    myMsgBox.Show("Program Error - can't process " & myPath, "Displaying Media")
-                Else
-                    myForm = New F_Video()
-                    'szTemp = "PlayFile() Top: " + PrefDisplay.Bounds.Top.ToString + "; Left: " + PrefDisplay.Bounds.Left.ToString +
-                    '    "; X: " & PrefDisplay.Bounds.X & "; Y: " & PrefDisplay.Bounds.Y &
-                    '    "; Height: " & PrefDisplay.Bounds.Height.ToString + "; Width: " + PrefDisplay.Bounds.Width.ToString +
-                    '    "; Location: " + PrefDisplay.Bounds.Location.ToString
-                    'myMsgBox.Show(szTemp)
-                    With myForm
-                        .LoadMedia(myMedia)
-                        .LoadBounds(PrefDisplay.Bounds)
-                        .LoadPause(ChkPause.Checked)
-                        .ShowDialog()
-                    End With
-                    myForm = Nothing
-                End If
+    '        Case Else
+    '            myMedia = GetMedia(myPath)
+    '            If myMedia Is Nothing Then
+    '                myMsgBox.Show("Program Error - can't process " & myPath, "Displaying Media")
+    '            Else
+    '                myForm = New F_Video()
+    '                'szTemp = "PlayFile() Top: " + PrefDisplay.Bounds.Top.ToString + "; Left: " + PrefDisplay.Bounds.Left.ToString +
+    '                '    "; X: " & PrefDisplay.Bounds.X & "; Y: " & PrefDisplay.Bounds.Y &
+    '                '    "; Height: " & PrefDisplay.Bounds.Height.ToString + "; Width: " + PrefDisplay.Bounds.Width.ToString +
+    '                '    "; Location: " + PrefDisplay.Bounds.Location.ToString
+    '                'myMsgBox.Show(szTemp)
+    '                With myForm
+    '                    .LoadMedia(myMedia)
+    '                    .LoadBounds(PrefDisplay.Bounds)
+    '                    .LoadPause(ChkPause.Checked)
+    '                    .ShowDialog()
+    '                End With
+    '                myForm = Nothing
+    '            End If
 
-        End Select
-    End Sub
+    '    End Select
+    'End Sub
 
     Private Function GetMedia(myPath As String) As Media
         Dim libVLC As New LibVLC()
@@ -676,6 +687,10 @@ Partial Class F_Main
         End If
         Return myMedia
     End Function
+
+    Private Sub Label6_Click(sender As Object, e As EventArgs) Handles Label6.Click
+
+    End Sub
 
     ' *** Section test routines ***
     ' Used to analyse the results of KeyDown and KeyPress events

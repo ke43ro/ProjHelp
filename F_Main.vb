@@ -1,6 +1,7 @@
 ﻿Imports System.Deployment.Application
 Imports LibVLCSharp.Shared
 
+
 Partial Class F_Main
     Friend isDebug As Boolean
     Friend isAutoShort As Boolean
@@ -33,14 +34,14 @@ Partial Class F_Main
         If ProjHelpData.ConnectDatabase() Is Nothing Then
             myMsgBox.Show("Unable to connect to the database.",
                             "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            'Close()
+            Close()
             Exit Sub
         End If
 
         Dim szVersion As String = GetPublishVersion()
         If szVersion = "Proto" Then
-            LblVersion.Text = "Version 2.0.0.8 Proto"
-            szVersion = "2.0.0.8"
+            LblVersion.Text = "Version 2.1.0.9 Proto"
+            szVersion = "2.1.0.9"
         Else
             LblVersion.Text = "Version " & szVersion
         End If
@@ -78,7 +79,7 @@ Partial Class F_Main
             Dim ver = ApplicationDeployment.CurrentDeployment.CurrentVersion
             Return $"{ver.Major}.{ver.Minor}.{ver.Build}.{ver.Revision}"
         Else
-            ' Not ClickOnce deployed, fallback to assembly version or custom string
+            ' Not ClickOnce deployed, fallback to custom string
             Return "Proto"
         End If
     End Function
@@ -372,6 +373,21 @@ Partial Class F_Main
         TxtSearch.Focus()
     End Sub
 
+    Private Sub ToolTip1_Draw(sender As Object, e As DrawToolTipEventArgs) Handles ToolTip1.Draw
+        e.Graphics.FillRectangle(Brushes.LightYellow, e.Bounds)
+        e.Graphics.DrawRectangle(Pens.Black, New Rectangle(0, 0, e.Bounds.Width - 1, e.Bounds.Height - 1))
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            e.Graphics.DrawString(e.ToolTipText, f, Brushes.Black, New PointF(2, 2))
+        End Using
+    End Sub
+
+    Private Sub ToolTip1_Popup(sender As Object, e As PopupEventArgs) Handles ToolTip1.Popup
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            Dim textSize = TextRenderer.MeasureText(ToolTip1.GetToolTip(e.AssociatedControl), f, New Size(600, 0), TextFormatFlags.WordBreak)
+            ' Add a little padding
+            e.ToolTipSize = New Size(Math.Min(textSize.Width, 600), textSize.Height + 4)
+        End Using
+    End Sub
 
     ' *** Section Control Interactions ***
     Private Sub ChkShortList_CheckedChanged(sender As Object, e As EventArgs) Handles ChkShortList.CheckedChanged
@@ -744,11 +760,14 @@ Partial Class F_Main
 End Class
 
 'Version number
-'Z.Y.X.W - Z.Y.X is major version.minor version.build; W is VS publish number.  Missing publish numbers were used in testing
+'Z.Y.X.W - Z.Y.X is {major version}.{minor version}.{build}; W is VS publish number.  Missing publish numbers were used in testing
+'2.1.0.9    Added support for hierarchical file management (abstract search of the disk into a separate class)
+'           further tweaks to UI including more readable tooltips on forms
+'2.0.0.8    Bypassed Winforms bug in double-click on DataGridView header; tidy main screen and add more details to instructions
 '2.0.0.7    UI tweaks, added stub for hierarchical file management, fix bug in playing drag and drop
 '2.0.0.6    Amended documentation to match the behaviour of ProjHelp
 '2.0.0.5    Tidy up, add splash screen, icon
 '2.0.0.3    Fixed runtime issue: not able to find SQLite.Interop.dll
 '2.0.0.1    Fixed installation issue with manifest file
-'2.0.0.0    First Version of full merger of the ad hoc file showing feature with the lyrics database management
+'2.0.0.0    First version of full merger of the ad hoc file showing feature with the lyrics database management
 '           Using SQLite instead of SQL Server

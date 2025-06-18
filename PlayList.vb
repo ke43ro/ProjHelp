@@ -1,6 +1,4 @@
 ﻿Imports System.Data.SQLite
-Imports Microsoft.Office.Interop.PowerPoint
-Imports Microsoft.Office.Interop.PowerPoint.PpViewType
 Imports LibVLCSharp.Shared
 
 Public Class PlayList
@@ -69,10 +67,14 @@ Public Class PlayList
                     With myForm
                         .LoadMedia(myMedia)
                         .LoadBounds(PrefDisplay.Bounds)
-                        .LoadPause(vidPause)
+                        '.LoadPause(vidPause)
                         .ShowDialog()
                     End With
                     myForm = Nothing
+                    If vidPause Then
+                        myMsgBox.Show("Press OK to continue with the next file in the playlist.",
+                                "Pause After Video", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
                 End If
 
         End Select
@@ -96,19 +98,6 @@ Public Class PlayList
 
         Dim filesView As DataView = TFadap.DefaultView
         filesView.Sort = "file_no"
-
-        'PPPres = New Microsoft.Office.Interop.PowerPoint.Application
-        'Try
-        '    PPPres.Visible = True
-
-        'Catch ex As Exception
-        '    myMsgBox.Show("Error making the PowerPoint window visible. Do you have a licenced copy of MS Office?" &
-        '            vbCrLf & "Please contact the programmer with this message:" & vbCrLf & ex.Message & vbCrLf &
-        '            ex.StackTrace,
-        '        "Presentation Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-        '    Exit Sub
-
-        'End Try
 
         i = -1
         Do

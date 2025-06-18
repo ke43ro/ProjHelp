@@ -73,7 +73,7 @@ Partial Class F_Main
         Me.TxtSearch.Size = New System.Drawing.Size(117, 24)
         Me.TxtSearch.TabIndex = 1
         Me.ToolTip1.SetToolTip(Me.TxtSearch, "Type letters of any word or partial word in the song name (or its alternate name)" &
-        " to find it in the database")
+        "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to find it in the database")
         '
         'Label2
         '
@@ -84,6 +84,10 @@ Partial Class F_Main
         Me.Label2.TabIndex = 5
         Me.Label2.Text = "Search pane:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "While searching:  use UP and DOWN arrow keys to move the selection;" &
     " use ENTER (or the Add button) to add the current selection to the list."
+        '
+        'ToolTip1
+        '
+        Me.ToolTip1.OwnerDraw = True
         '
         'BtnPlay
         '
@@ -187,7 +191,7 @@ Partial Class F_Main
         Me.T_filesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.T_filesDataGridView.Size = New System.Drawing.Size(862, 182)
         Me.T_filesDataGridView.TabIndex = 2
-        Me.ToolTip1.SetToolTip(Me.T_filesDataGridView, "The PPT Name is the actual file name of the song on the hard disk.  The Other Nam" &
+        Me.ToolTip1.SetToolTip(Me.T_filesDataGridView, "The PPT Name is the actual file name of the song on the hard disk." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "The Other Nam" &
         "e is an alternative title of the song or other search data.")
         '
         'LBInstant
@@ -287,6 +291,7 @@ Partial Class F_Main
         Me.ChkPause.Size = New System.Drawing.Size(201, 22)
         Me.ChkPause.TabIndex = 27
         Me.ChkPause.Text = "Pause at the end of videos"
+        Me.ToolTip1.SetToolTip(Me.ChkPause, resources.GetString("ChkPause.ToolTip"))
         Me.ChkPause.UseVisualStyleBackColor = True
         '
         'F_Main

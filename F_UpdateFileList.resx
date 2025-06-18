@@ -129,7 +129,7 @@ The File table will be updated against the files found in the folder shown below
   </metadata>
   <data name="TextBox3.Text" xml:space="preserve">
     <value>If a file listed in the database as ACTIVE is not found on the disk and does not appear in any Play List, the record will be removed from the database.
-If the file is found in one or more Play Lists, you can select the action (hover over each button for more information):</value>
+If the file is found in one or more Play Lists, you can select the action (hover over each button for more information). Also</value>
   </data>
   <metadata name="FolderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>316, 12</value>

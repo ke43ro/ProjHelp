@@ -38,7 +38,7 @@ Partial Class F_FillTables
         '
         Me.BtnClose.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnClose.Location = New System.Drawing.Point(434, 345)
-        Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.BtnClose.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(189, 55)
         Me.BtnClose.TabIndex = 0
@@ -50,7 +50,7 @@ Partial Class F_FillTables
         Me.txtFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtFolder.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtFolder.Location = New System.Drawing.Point(18, 17)
-        Me.txtFolder.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtFolder.Margin = New System.Windows.Forms.Padding(4)
         Me.txtFolder.Name = "txtFolder"
         Me.txtFolder.ReadOnly = True
         Me.txtFolder.Size = New System.Drawing.Size(611, 24)
@@ -62,7 +62,7 @@ Partial Class F_FillTables
         Me.txtResults.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtResults.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtResults.Location = New System.Drawing.Point(18, 53)
-        Me.txtResults.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtResults.Margin = New System.Windows.Forms.Padding(4)
         Me.txtResults.Multiline = True
         Me.txtResults.Name = "txtResults"
         Me.txtResults.ReadOnly = True
@@ -72,24 +72,28 @@ Partial Class F_FillTables
         Me.txtResults.Text = "<Results>"
         Me.ToolTip1.SetToolTip(Me.txtResults, "Shows what is happening in the program")
         '
+        'ToolTip1
+        '
+        Me.ToolTip1.OwnerDraw = True
+        '
         'BtnLoadTable
         '
         Me.BtnLoadTable.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnLoadTable.Location = New System.Drawing.Point(230, 345)
-        Me.BtnLoadTable.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.BtnLoadTable.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnLoadTable.Name = "BtnLoadTable"
         Me.BtnLoadTable.Size = New System.Drawing.Size(189, 55)
         Me.BtnLoadTable.TabIndex = 4
         Me.BtnLoadTable.Text = "Load table"
-        Me.ToolTip1.SetToolTip(Me.BtnLoadTable, "Scan the specified MASTERS folder and record the names of all PPT & PPTX files fo" &
-        "und in the Files table.")
+        Me.ToolTip1.SetToolTip(Me.BtnLoadTable, "Scan the specified MASTERS folder and add the names of all PPT & PPTX files" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "foun" &
+        "d to the Files table (ignores those already included).")
         Me.BtnLoadTable.UseVisualStyleBackColor = True
         '
         'BtnEmpty
         '
         Me.BtnEmpty.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnEmpty.Location = New System.Drawing.Point(26, 346)
-        Me.BtnEmpty.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.BtnEmpty.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnEmpty.Name = "BtnEmpty"
         Me.BtnEmpty.Size = New System.Drawing.Size(189, 55)
         Me.BtnEmpty.TabIndex = 7
@@ -101,7 +105,7 @@ Partial Class F_FillTables
         '
         Me.T_filesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.T_filesDataGridView.Location = New System.Drawing.Point(98, 410)
-        Me.T_filesDataGridView.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.T_filesDataGridView.Margin = New System.Windows.Forms.Padding(4)
         Me.T_filesDataGridView.Name = "T_filesDataGridView"
         Me.T_filesDataGridView.Size = New System.Drawing.Size(450, 202)
         Me.T_filesDataGridView.TabIndex = 6
@@ -120,7 +124,7 @@ Partial Class F_FillTables
         Me.Controls.Add(Me.txtFolder)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "F_FillTables"

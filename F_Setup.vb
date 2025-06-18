@@ -1,6 +1,10 @@
 ﻿Partial Class F_SetUp
     Private ReadOnly isDebug As Boolean = My.Settings.Debug
     Private ReadOnly myMsgBox As New DlgMsgBox
+    Private ReadOnly szPklea As String = "Projection Helper will collect PowerPoint " &
+        "files from all single letter subfolders of the MASTERS folder."
+    Private ReadOnly szHier As String = "Projection Helper will collect PowerPoint " &
+        "files from the master folder and all subfolders recursively."
 
     Private Sub F_SetUp_OnLoad(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim szFolder As String = My.Settings.MasterFolder
@@ -10,14 +14,15 @@
 
         If Dir(TxtFolder.Text, vbDirectory) <> "" Then
             ' folder exists
-            BtnTest3.Enabled = True
+            BtnTest.Enabled = True
         Else
-            BtnTest3.Enabled = False
+            BtnTest.Enabled = False
         End If
 
-        CheckBox1.Enabled = False
-        CheckBox1.Checked = False
+        CheckBox.Enabled = False
+        CheckBox.Checked = False
         BtnBrowse.Enabled = True
+        TxtAdvice.Visible = False
     End Sub
 
 
@@ -26,8 +31,20 @@
         If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
             TxtFolder.Text = FolderBrowserDialog1.SelectedPath
         End If
-        If Dir(TxtFolder.Text, vbDirectory) <> "" Then
-            BtnTest3.Enabled = True
+        Dim szFname As String = Dir(TxtFolder.Text, vbDirectory)
+        If szFname <> "" Then
+            BtnTest.Enabled = True
+            TxtAdvice.Visible = True
+            If szFname = "MASTERS" Then
+                ' folder is in the PKLEA format
+                TxtAdvice.Text = szPklea
+            Else
+                TxtAdvice.Text = szHier
+            End If
+
+            ' done after Test
+            'My.Settings.MasterFolder = TxtFolder.Text
+            'My.Settings.Save()
         Else
             myMsgBox.Show("This feature can only be run if a folder is specified",
                             "Testing the setup", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -36,7 +53,7 @@
     End Sub
 
 
-    Private Sub BtnTest3_Click(sender As Object, e As EventArgs) Handles BtnTest3.Click
+    Private Sub BtnTest_Click(sender As Object, e As EventArgs) Handles BtnTest.Click
         ' fill the database
         Cursor = Cursors.WaitCursor
         Dim FillForm As New F_FillTables
@@ -59,21 +76,21 @@
             result = FillForm.ShowDialog()
 
         Catch ex As Exception
-            myMsgBox.Show("There was a failure while trying to display the lyrics table.  Please contact the application vendor" &
+            myMsgBox.Show("There was a failure while trying to open the lyrics table.  Please contact the application vendor" &
                 "And provide the following message:" & vbCrLf & ex.Message,
                 "Install failure", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
 
         If result <> DialogResult.OK Then
             Cursor = Cursors.Default
-            myMsgBox.Show("Projection Helper will be fully operational without the tables filled")
+            myMsgBox.Show("Projection Helper will not be fully operational without the tables filled")
             Exit Sub
         End If
 
         ' if successful
         My.Settings.MasterFolder = TxtFolder.Text
         My.Settings.Save()
-        CheckBox1.Checked = True
+        CheckBox.Checked = True
         Cursor = Cursors.Default
     End Sub
 
@@ -81,9 +98,9 @@
     Private Sub F_SetUp_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Dim result As DialogResult
 
-        If isDebug Then MyMsgBox.Show("testing Checkbox")
-        If CheckBox1.Checked = True Then
-            If isDebug Then MyMsgBox.Show("closing")
+        If isDebug Then myMsgBox.Show("testing Checkbox")
+        If CheckBox.Checked = True Then
+            If isDebug Then myMsgBox.Show("closing")
         Else
             result = myMsgBox.Show("The lyrics table has not been filled - Projection Helper will not function fully." &
                     vbCrLf & "Are you sure you want to close the set up?",
@@ -93,4 +110,5 @@
             End If
         End If
     End Sub
+
 End Class

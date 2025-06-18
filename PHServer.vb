@@ -292,19 +292,29 @@ Public Class FilesTable
         dg.Columns("file_no").HeaderText = "#"
         dg.Columns("f_name").Width = 200
         dg.Columns("f_name").HeaderText = "PPT Name"
+        dg.Columns("f_name").ToolTipText = "This is the name of the PowerPoint file. " &
+            "It is used to identify the file in the system."
         dg.Columns("f_path").Width = 200
         dg.Columns("f_path").HeaderText = "Folder"
         dg.Columns("f_altname").Width = 200
         dg.Columns("f_altname").HeaderText = "Other Name"
+        dg.Columns("f_altname").ToolTipText = "This is an alternative name for the song. " &
+            "It can be used to search for the file in the system."
         dg.Columns("isShortList").Width = 35
         dg.Columns("isShortList").HeaderText = "ShortL"
+        dg.Columns("isShortList").ToolTipText = "If Y, this is a file that " &
+            "is on the Short List."
         dg.Columns("create_dt").Visible = False
         dg.Columns("last_dt").Visible = False
         dg.Columns("last_action").Visible = False
         dg.Columns("isActive").Width = 35
         dg.Columns("isActive").HeaderText = "Active"
+        dg.Columns("isActive").ToolTipText = "If Y, this file is active and will appear in lists. " &
+            "Otherwise it will not be seen by the operator."
         dg.Columns("s_search").Width = 200
         dg.Columns("s_search").HeaderText = "Search String"
+        dg.Columns("s_search").ToolTipText = "This is the actual search string for the PowerPoint file. " &
+            "You can edit it at Advanced > Edit File List."
         dg.DefaultCellStyle.Font = New Font("Microsoft Sans Serif", 10.5, FontStyle.Regular)
     End Sub
 
@@ -462,10 +472,13 @@ Public Class PlaylistsTable
         dg.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dg.Columns("list_no").Width = 30
         dg.Columns("list_no").HeaderText = "List No"
+        dg.Columns("list_no").ToolTipText = "This unique identifier for the playlist is set ny the database."
         dg.Columns("play_dt").Width = 150
         dg.Columns("play_dt").HeaderText = "Show Time"
+        dg.Columns("play_dt").ToolTipText = "This is the date and time you expect to use this list"
         dg.Columns("l_name").Width = 250
         dg.Columns("l_name").HeaderText = "Playlist Name"
+        dg.Columns("l_name").ToolTipText = "This name is used to identify the list you want to use"
         dg.DefaultCellStyle.Font = New Font("Microsoft Sans Serif", 10.5, FontStyle.Regular)
     End Sub
 

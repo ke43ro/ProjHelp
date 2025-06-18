@@ -22,54 +22,55 @@ Partial Class F_SetUp
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(F_SetUp))
-        Me.BtnTest3 = New System.Windows.Forms.Button()
-        Me.TxtAdvice3 = New System.Windows.Forms.TextBox()
-        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
+        Me.BtnTest = New System.Windows.Forms.Button()
+        Me.TxtAdvice = New System.Windows.Forms.TextBox()
+        Me.CheckBox = New System.Windows.Forms.CheckBox()
         Me.BtnBrowse = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.TxtFolder = New System.Windows.Forms.TextBox()
+        Me.TxtInstr = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
-        'BtnTest3
+        'BtnTest
         '
-        Me.BtnTest3.Enabled = False
-        Me.BtnTest3.Font = New System.Drawing.Font("Segoe UI", 11.25!)
-        Me.BtnTest3.Location = New System.Drawing.Point(295, 192)
-        Me.BtnTest3.Name = "BtnTest3"
-        Me.BtnTest3.Size = New System.Drawing.Size(135, 29)
-        Me.BtnTest3.TabIndex = 24
-        Me.BtnTest3.Text = "Test"
-        Me.BtnTest3.UseVisualStyleBackColor = True
+        Me.BtnTest.Enabled = False
+        Me.BtnTest.Font = New System.Drawing.Font("Segoe UI", 11.25!)
+        Me.BtnTest.Location = New System.Drawing.Point(143, 147)
+        Me.BtnTest.Name = "BtnTest"
+        Me.BtnTest.Size = New System.Drawing.Size(135, 29)
+        Me.BtnTest.TabIndex = 24
+        Me.BtnTest.Text = "Test"
+        Me.BtnTest.UseVisualStyleBackColor = True
         '
-        'TxtAdvice3
+        'TxtAdvice
         '
-        Me.TxtAdvice3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtAdvice3.Font = New System.Drawing.Font("Segoe UI", 11.25!)
-        Me.TxtAdvice3.Location = New System.Drawing.Point(12, 12)
-        Me.TxtAdvice3.Multiline = True
-        Me.TxtAdvice3.Name = "TxtAdvice3"
-        Me.TxtAdvice3.ReadOnly = True
-        Me.TxtAdvice3.Size = New System.Drawing.Size(419, 170)
-        Me.TxtAdvice3.TabIndex = 22
-        Me.TxtAdvice3.TabStop = False
-        Me.TxtAdvice3.Text = resources.GetString("TxtAdvice3.Text")
+        Me.TxtAdvice.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtAdvice.Font = New System.Drawing.Font("Segoe UI", 11.25!)
+        Me.TxtAdvice.Location = New System.Drawing.Point(12, 205)
+        Me.TxtAdvice.Multiline = True
+        Me.TxtAdvice.Name = "TxtAdvice"
+        Me.TxtAdvice.ReadOnly = True
+        Me.TxtAdvice.Size = New System.Drawing.Size(419, 67)
+        Me.TxtAdvice.TabIndex = 22
+        Me.TxtAdvice.TabStop = False
+        Me.TxtAdvice.Text = "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+        Me.TxtAdvice.Visible = False
         '
-        'CheckBox1
+        'CheckBox
         '
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Location = New System.Drawing.Point(213, 200)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(41, 17)
-        Me.CheckBox1.TabIndex = 28
-        Me.CheckBox1.Text = "OK"
-        Me.CheckBox1.UseVisualStyleBackColor = True
+        Me.CheckBox.AutoSize = True
+        Me.CheckBox.Location = New System.Drawing.Point(205, 182)
+        Me.CheckBox.Name = "CheckBox"
+        Me.CheckBox.Size = New System.Drawing.Size(41, 17)
+        Me.CheckBox.TabIndex = 28
+        Me.CheckBox.Text = "OK"
+        Me.CheckBox.UseVisualStyleBackColor = True
         '
         'BtnBrowse
         '
         Me.BtnBrowse.Enabled = False
         Me.BtnBrowse.Font = New System.Drawing.Font("Segoe UI", 11.25!)
-        Me.BtnBrowse.Location = New System.Drawing.Point(12, 192)
+        Me.BtnBrowse.Location = New System.Drawing.Point(123, 79)
         Me.BtnBrowse.Name = "BtnBrowse"
         Me.BtnBrowse.Size = New System.Drawing.Size(179, 29)
         Me.BtnBrowse.TabIndex = 27
@@ -86,7 +87,7 @@ Partial Class F_SetUp
         Me.TxtFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtFolder.Enabled = False
         Me.TxtFolder.Font = New System.Drawing.Font("Segoe UI", 11.25!)
-        Me.TxtFolder.Location = New System.Drawing.Point(13, 236)
+        Me.TxtFolder.Location = New System.Drawing.Point(14, 114)
         Me.TxtFolder.Name = "TxtFolder"
         Me.TxtFolder.ReadOnly = True
         Me.TxtFolder.Size = New System.Drawing.Size(417, 27)
@@ -94,16 +95,31 @@ Partial Class F_SetUp
         Me.TxtFolder.TabStop = False
         Me.TxtFolder.Text = "Master Folder"
         '
+        'TxtInstr
+        '
+        Me.TxtInstr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtInstr.Font = New System.Drawing.Font("Segoe UI", 11.25!)
+        Me.TxtInstr.Location = New System.Drawing.Point(14, 12)
+        Me.TxtInstr.Multiline = True
+        Me.TxtInstr.Name = "TxtInstr"
+        Me.TxtInstr.ReadOnly = True
+        Me.TxtInstr.Size = New System.Drawing.Size(419, 52)
+        Me.TxtInstr.TabIndex = 29
+        Me.TxtInstr.TabStop = False
+        Me.TxtInstr.Text = "Please use the Browse button to select the top-level folder of your PowerPoint fi" &
+    "les collection, then press Test."
+        '
         'F_SetUp
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(445, 273)
+        Me.ClientSize = New System.Drawing.Size(445, 285)
+        Me.Controls.Add(Me.TxtInstr)
         Me.Controls.Add(Me.TxtFolder)
-        Me.Controls.Add(Me.BtnTest3)
-        Me.Controls.Add(Me.TxtAdvice3)
+        Me.Controls.Add(Me.BtnTest)
+        Me.Controls.Add(Me.TxtAdvice)
         Me.Controls.Add(Me.BtnBrowse)
-        Me.Controls.Add(Me.CheckBox1)
+        Me.Controls.Add(Me.CheckBox)
         Me.HelpButton = True
         Me.Name = "F_SetUp"
         Me.Text = "Set Up Wizard"
@@ -111,10 +127,11 @@ Partial Class F_SetUp
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents BtnTest3 As Button
-    Friend WithEvents TxtAdvice3 As TextBox
+    Friend WithEvents BtnTest As Button
+    Friend WithEvents TxtAdvice As TextBox
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
     Friend WithEvents TxtFolder As TextBox
     Friend WithEvents BtnBrowse As Button
-    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents CheckBox As CheckBox
+    Friend WithEvents TxtInstr As TextBox
 End Class

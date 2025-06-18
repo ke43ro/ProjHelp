@@ -23,6 +23,7 @@ Partial Class F_List_IO
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(F_List_IO))
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.TextBox2 = New System.Windows.Forms.TextBox()
@@ -35,13 +36,9 @@ Partial Class F_List_IO
         Me.ChkAddSelect = New System.Windows.Forms.CheckBox()
         Me.ChkRemoveSelect = New System.Windows.Forms.CheckBox()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
-        'Me.ProHelpDataSet = New ProHelpDataSet()
         Me.T_filesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.T_filesTable = New ProHelpDataSetTables.T_filesTable()
-        'Me.TableManager = New ProHelpDataSetTables.TableManager()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.GroupBox1.SuspendLayout()
-        'CType(Me.ProHelpDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -52,9 +49,7 @@ Partial Class F_List_IO
         Me.BtnExport.Size = New System.Drawing.Size(161, 33)
         Me.BtnExport.TabIndex = 0
         Me.BtnExport.Text = "Export File List"
-        Me.ToolTip1.SetToolTip(Me.BtnExport, "Create a file that lists all the records in your database including their Active/" &
-        "Inactive and Selected (Short List) status.  Use  Update File List first for best" &
-        " results.")
+        Me.ToolTip1.SetToolTip(Me.BtnExport, resources.GetString("BtnExport.ToolTip"))
         Me.BtnExport.UseVisualStyleBackColor = True
         '
         'GroupBox1
@@ -117,7 +112,7 @@ Partial Class F_List_IO
         Me.BtnImport.TabIndex = 6
         Me.BtnImport.Text = "Import"
         Me.ToolTip1.SetToolTip(Me.BtnImport, "Read a file that has been exported from another installation.  Make changes to yo" &
-        "ur database to synchronise (according to your chosen options).")
+        "ur database to synchronise" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(according to your chosen options).")
         Me.BtnImport.UseVisualStyleBackColor = True
         '
         'TextBox1
@@ -179,27 +174,13 @@ Partial Class F_List_IO
         '
         Me.OpenFileDialog1.FileName = "OpenFileDialog1"
         '
-        'ProHelpDataSet
-        '
-        'Me.ProHelpDataSet.DataSetName = "ProHelpDataSet"
-        'Me.ProHelpDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
-        '
         'T_filesBindingSource
         '
         Me.T_filesBindingSource.DataMember = "t_files"
-        'Me.T_filesBindingSource.DataSource = Me.ProHelpDataSet
         '
-        'T_filesTable
+        'ToolTip1
         '
-        'Me.T_filesTable.ClearBeforeFill = True
-        '
-        'TableManager
-        '
-        'Me.TableManager.BackupDataSetBeforeUpdate = False
-        'Me.TableManager.T_filesTable = Me.T_filesTable
-        'Me.TableManager.t_playlistsTable = Nothing
-        'Me.TableManager.tx_playlist_songTable = Nothing
-        'Me.TableManager.UpdateOrder = ProHelpDataSetTables.TableManager.UpdateOrderOption.InsertUpdateDelete
+        Me.ToolTip1.OwnerDraw = True
         '
         'F_List_IO
         '
@@ -212,7 +193,6 @@ Partial Class F_List_IO
         Me.Text = "Export or Import a List of Files"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
-        'CType(Me.ProHelpDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.T_filesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 

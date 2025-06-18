@@ -65,7 +65,7 @@ Partial Class DlgLoadList
         Me.Save_Button.TabIndex = 2
         Me.Save_Button.Text = "Save"
         Me.ToolTip1.SetToolTip(Me.Save_Button, "Save the unnamed list from the Main screen into the named Play List currently sel" &
-        "ected above.  Any previous entries will be removed first.")
+        "ected above." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Any previous entries will be removed first.")
         '
         'Load_Button
         '
@@ -76,7 +76,7 @@ Partial Class DlgLoadList
         Me.Load_Button.TabIndex = 0
         Me.Load_Button.Text = "Load"
         Me.ToolTip1.SetToolTip(Me.Load_Button, "Copy the titles listed in the currently selected named Play List into the unnamed" &
-        " list on the main screen.  These are added to those already included.")
+        " list on the main screen." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "These are added to those already included.")
         '
         'Cancel_Button
         '
@@ -102,6 +102,7 @@ Partial Class DlgLoadList
         'TextBox1
         '
         Me.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TextBox1.Enabled = False
         Me.TextBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TextBox1.Location = New System.Drawing.Point(12, 290)
         Me.TextBox1.Name = "TextBox1"
@@ -143,7 +144,7 @@ Partial Class DlgLoadList
         Me.TxtStatus.Size = New System.Drawing.Size(627, 24)
         Me.TxtStatus.TabIndex = 8
         Me.ToolTip1.SetToolTip(Me.TxtStatus, "This is a reminder of how many titles you have iin the unnamed list back on the m" &
-        "ain screen and how man y in the selected named play list")
+        "ain screen" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "and how many are in the selected named play list")
         '
         'ChkFuture
         '
@@ -157,8 +158,12 @@ Partial Class DlgLoadList
         Me.ChkFuture.TabIndex = 9
         Me.ChkFuture.Text = "See only Future Shows"
         Me.ToolTip1.SetToolTip(Me.ChkFuture, "When this is ticked, only Play Lists with a date of today and later will be shown" &
-        " in the list above.  Clear it to see prior dated Play Lists.")
+        " in the list above." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Clear it to see prior dated Play Lists.")
         Me.ChkFuture.UseVisualStyleBackColor = True
+        '
+        'ToolTip1
+        '
+        Me.ToolTip1.OwnerDraw = True
         '
         'DlgLoadList
         '

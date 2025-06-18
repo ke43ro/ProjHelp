@@ -1,4 +1,7 @@
 ﻿Imports System.Data.SQLite
+'Imports System.IO
+'Imports System.Net.WebRequestMethods
+'Imports Microsoft.Office.Core
 
 Partial Class F_FillTables
     Private nMatched As Integer, nMissing As Integer
@@ -40,7 +43,7 @@ Partial Class F_FillTables
     End Sub
 
     Private Sub BtnLoadTable_Click(sender As Object, e As EventArgs) Handles BtnLoadTable.Click
-        Dim Result As DialogResult
+        Dim Result As DialogResult, myFiles As DataTable, myPPTs As GetFiles
 
         If Dir(szFolder, vbDirectory) = "" Then
             myMsgBox.Show("This feature can only be run if a valid folder is specified",
@@ -60,23 +63,47 @@ Partial Class F_FillTables
         Cursor = Cursors.WaitCursor
         BtnClose.Enabled = False
 
-        txtResults.Text = txtResults.Text & vbCrLf & "Loading file records into the Table"
         CheckFiles()
 
         If pkleaFormat Then
             txtResults.Text = txtResults.Text & vbCrLf & "Loading from Parklea-type MASTERS folder"
             txtResults.Text = txtResults.Text & vbCrLf & "Searching for alpha folders in: " & szFolder
-            Dim allDirs As List(Of String) = GetFoldersPklea(szFolder)
-            GetFilesPklea(allDirs)       ' modifies base table
+            'Dim allDirs As List(Of String) = GetFoldersPklea(szFolder)
+            'GetFilesPklea(allDirs)       ' modifies base table
         Else
             txtResults.Text = txtResults.Text & vbCrLf & "Loading from Hierarchical-type folder"
             txtResults.Text = txtResults.Text & vbCrLf & "Searching for folders in: " & szFolder
-            GetFilesHier(szFolder)       ' modifies base table
+            '            GetFilesHier(szFolder)       ' modifies base table
         End If
+
+        ' get all PowerPoint files in the specified folder
+        myPPTs = New GetFiles()
+        myFiles = myPPTs.GetPPs(szFolder)
+
+        'compare the files found with those in the table
+        Dim searchView As New DataView(T_filesTable) With {.Sort = "f_name"}
+        Dim filesView As New DataView(myFiles) With {.Sort = "FileName"}
+        Dim iNew As Integer = 0, iAlready As Integer = 0, Lookup As Integer
+        txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files into my List..."
+
+        For Each Row In filesView
+            Lookup = searchView.Find(Row("FileName"))
+            If Lookup < 0 Then
+                iNew += 1
+                T_filesTable.Insert(Row("FileName"), Row("FilePath"), False)
+            Else
+                iAlready += 1
+            End If
+        Next Row
+
+        iFilesEnd = iNew + iAlready
+        T_filesTable.LoadAll(InclInActive:=True)
+        T_filesDataGridView.Update()
+        txtResults.Text = txtResults.Text & vbCrLf & "Found " & iNew & " new files; " & iAlready & " already listed"
 
         T_filesDataGridView.Update()
 
-        If isDebug Then MyMsgBox.Show("After getting files, records: adapter=" & T_filesTable.Count &
+        If isDebug Then myMsgBox.Show("After getting files, records: adapter=" & T_filesTable.Count &
                                    "; view=" & T_filesDataGridView.Rows.Count)
         txtResults.Text = txtResults.Text & vbCrLf & (iFilesEnd - iFilesStart) &
             " file records loaded"
@@ -109,7 +136,7 @@ Partial Class F_FillTables
         T_filesTable.LoadAll(InclInActive:=True)
         T_filesDataGridView.Update()
 
-        If isDebug Then MyMsgBox.Show("After emptying, records: adapter=" & T_filesTable.Count &
+        If isDebug Then myMsgBox.Show("After emptying, records: adapter=" & T_filesTable.Count &
                                    "; view=" & T_filesDataGridView.Rows.Count)
         txtResults.Text = txtResults.Text & vbCrLf & "Completed emptying the table"
         Cursor = Cursors.Default
@@ -183,37 +210,45 @@ Partial Class F_FillTables
         txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
     End Sub
 
-    Private Sub GetFilesHier(rootFolder As String)
-        ' This subroutine is used to get the files from the specified folders
-        MessageBox.Show("This feature is not yet implemented for Hierarchical folders", "Not Implemented", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        Exit Sub
+    'Private Sub GetFilesHier(rootFolder As String)
+    '    ' This subroutine is used to get the files from the specified folders
+    '    'MessageBox.Show("This feature is not yet implemented for Hierarchical folders", "Not Implemented", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    '    'Exit Sub
 
-        Dim szPath As String, NextFile As String, arPaths As String()
-        Dim searchView As New DataView(T_filesTable)
-        Dim nNew As Integer = 0, LookUp As Integer, nAlready As Integer = 0
-        txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files into my List..."
-        searchView.Sort = "f_name"
-        For Each szPath In arPaths
-            NextFile = Dir(szPath & "\*.*", 0)
-            While NextFile <> "" ' j <4
-                Select Case NextFile.Substring(NextFile.Length - 4, 4).ToLower()
-                    Case ".mp3", ".wav", ".wma", ".mp4", ".avi", ".mkv", ".flv", ".mov"
-                        LookUp = searchView.Find(NextFile)
-                        If LookUp < 0 Then
-                            nNew += 1
-                            T_filesTable.Insert(NextFile, szPath, True)
-                        Else
-                            nAlready += 1
-                        End If
-                End Select
-                NextFile = Dir()
-            End While
-        Next szPath
-        iFilesEnd = nNew + nAlready
-        T_filesTable.LoadAll(InclInActive:=True)
-        T_filesDataGridView.Update()
-        txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
-    End Sub
+    '    'Dim szPath As String
+    '    Dim searchView As New DataView(T_filesTable)
+    '    Dim nNew As Integer = 0, nAlready As Integer = 0
+    '    txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files into my List..."
+    '    searchView.Sort = "f_name"
+
+    '    GetItems(rootFolder, searchView, nNew, nAlready)
+
+    '    iFilesEnd = nNew + nAlready
+    '    T_filesTable.LoadAll(InclInActive:=True)
+    '    T_filesDataGridView.Update()
+    '    txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
+    'End Sub
+
+    'Private Sub GetItems(myFolder As String, searchView As DataView, ByRef iNew As Integer, ByRef iAlready As Integer)
+    '    Dim myFile As String, LookUp As Integer
+    '    For Each szPath In FileIO.FileSystem.GetFiles(myFolder, FileIO.SearchOption.SearchAllSubDirectories, "*.*")
+    '        If Directory.Exists(szPath) Then
+    '            GetItems(szPath, searchView, iNew, iAlready)
+    '        ElseIf File.Exists(szPath) Then
+    '            myFile = FileIO.FileSystem.GetName(szPath)
+    '            Select Case myFile.Substring(myFile.Length - 4, 4).ToLower()
+    '                Case ".ppt", "pptx", "pptm"
+    '                    LookUp = searchView.Find(myFile)
+    '                    If LookUp < 0 Then
+    '                        iNew += 1
+    '                        T_filesTable.Insert(myFile, szPath, True)
+    '                    Else
+    '                        iAlready += 1
+    '                    End If
+    '            End Select
+    '        End If
+    '    Next szPath
+    'End Sub
 
     Private Sub CheckFiles()
         Dim FullName As String
@@ -260,8 +295,25 @@ Partial Class F_FillTables
         End If
 
         T_filesTable.LoadAll(InclInActive:=True)
-        If isDebug Then MyMsgBox.Show("After checking files, records: adapter=" & T_filesTable.Count &
+        If isDebug Then myMsgBox.Show("After checking files, records: adapter=" & T_filesTable.Count &
                                    "; view=" & T_filesDataGridView.RowCount)
 
     End Sub
+
+    Private Sub ToolTip1_Draw(sender As Object, e As DrawToolTipEventArgs) Handles ToolTip1.Draw
+        e.Graphics.FillRectangle(Brushes.LightYellow, e.Bounds)
+        e.Graphics.DrawRectangle(Pens.Black, New Rectangle(0, 0, e.Bounds.Width - 1, e.Bounds.Height - 1))
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            e.Graphics.DrawString(e.ToolTipText, f, Brushes.Black, New PointF(2, 2))
+        End Using
+    End Sub
+
+    Private Sub ToolTip1_Popup(sender As Object, e As PopupEventArgs) Handles ToolTip1.Popup
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            Dim textSize = TextRenderer.MeasureText(ToolTip1.GetToolTip(e.AssociatedControl), f, New Size(600, 0), TextFormatFlags.WordBreak)
+            ' Add a little padding
+            e.ToolTipSize = New Size(Math.Min(textSize.Width, 600), textSize.Height + 4)
+        End Using
+    End Sub
+
 End Class

@@ -331,4 +331,21 @@ Public Class F_List_IO
         Next
         MyMsgBox.Show("File creation complete", "Projection Helper Import Results Save", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
+
+    Private Sub ToolTip1_Draw(sender As Object, e As DrawToolTipEventArgs) Handles ToolTip1.Draw
+        e.Graphics.FillRectangle(Brushes.LightYellow, e.Bounds)
+        e.Graphics.DrawRectangle(Pens.Black, New Rectangle(0, 0, e.Bounds.Width - 1, e.Bounds.Height - 1))
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            e.Graphics.DrawString(e.ToolTipText, f, Brushes.Black, New PointF(2, 2))
+        End Using
+    End Sub
+
+    Private Sub ToolTip1_Popup(sender As Object, e As PopupEventArgs) Handles ToolTip1.Popup
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            Dim textSize = TextRenderer.MeasureText(ToolTip1.GetToolTip(e.AssociatedControl), f, New Size(600, 0), TextFormatFlags.WordBreak)
+            ' Add a little padding
+            e.ToolTipSize = New Size(Math.Min(textSize.Width, 600), textSize.Height + 4)
+        End Using
+    End Sub
+
 End Class

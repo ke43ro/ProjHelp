@@ -1,9 +1,12 @@
 ﻿Imports System.Data.SQLite
 
 Public Class F_Advanced
+    Private isLoading As Boolean
     Private Sub F_Advanced_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        isLoading = True
         ChkAutoSelectList.Checked = My.Settings.AutoShortList
         ChkDebug.Checked = My.Settings.Debug
+        isLoading = False
     End Sub
 
     Private Sub BtnListIO_Click(sender As Object, e As EventArgs) Handles BtnListIO.Click
@@ -23,15 +26,34 @@ Public Class F_Advanced
     End Sub
 
     Private Sub ChkAutoSelectList_CheckedChanged(sender As Object, e As EventArgs) Handles ChkAutoSelectList.CheckedChanged
+        If isLoading Then Exit Sub
         F_Main.isAutoShort = ChkAutoSelectList.Checked
         My.Settings.AutoShortList = F_Main.isAutoShort
         My.Settings.Save()
     End Sub
 
     Private Sub ChkDebug_CheckedChanged(sender As Object, e As EventArgs) Handles ChkDebug.CheckedChanged
+        If isLoading Then Exit Sub
         F_Main.isDebug = ChkDebug.Checked
         My.Settings.Debug = F_Main.isDebug
         My.Settings.Save()
 
     End Sub
+
+    Private Sub ToolTip1_Draw(sender As Object, e As DrawToolTipEventArgs) Handles ToolTip1.Draw
+        e.Graphics.FillRectangle(Brushes.LightYellow, e.Bounds)
+        e.Graphics.DrawRectangle(Pens.Black, New Rectangle(0, 0, e.Bounds.Width - 1, e.Bounds.Height - 1))
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            e.Graphics.DrawString(e.ToolTipText, f, Brushes.Black, New PointF(2, 2))
+        End Using
+    End Sub
+
+    Private Sub ToolTip1_Popup(sender As Object, e As PopupEventArgs) Handles ToolTip1.Popup
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            Dim textSize = TextRenderer.MeasureText(ToolTip1.GetToolTip(e.AssociatedControl), f, New Size(600, 0), TextFormatFlags.WordBreak)
+            ' Add a little padding
+            e.ToolTipSize = New Size(Math.Min(textSize.Width, 650), textSize.Height + 4)
+        End Using
+    End Sub
+
 End Class

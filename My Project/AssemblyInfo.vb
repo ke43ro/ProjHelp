@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("ProjHelp")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("HP")>
+<Assembly: AssemblyDescription("Projection Helper")>
+<Assembly: AssemblyCompany("Keith Robards")>
 <Assembly: AssemblyProduct("ProjHelp")>
-<Assembly: AssemblyCopyright("Copyright © HP 2025")>
+<Assembly: AssemblyCopyright("Copyright © KR 2025")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>

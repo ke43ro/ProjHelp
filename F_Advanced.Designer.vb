@@ -35,21 +35,21 @@ Partial Class F_Advanced
         'BtnListIO
         '
         Me.BtnListIO.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnListIO.Location = New System.Drawing.Point(114, 19)
+        Me.BtnListIO.Location = New System.Drawing.Point(99, 19)
         Me.BtnListIO.Name = "BtnListIO"
-        Me.BtnListIO.Size = New System.Drawing.Size(161, 33)
+        Me.BtnListIO.Size = New System.Drawing.Size(191, 33)
         Me.BtnListIO.TabIndex = 0
         Me.BtnListIO.Text = "File List Import/Export"
         Me.ToolTip1.SetToolTip(Me.BtnListIO, "Exports a file that can be read on another installation to transfer your short li" &
-        "st and alternative text or vice versa.")
+        "st" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "and alternative text or vice versa.")
         Me.BtnListIO.UseVisualStyleBackColor = True
         '
         'BtnEdit
         '
         Me.BtnEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnEdit.Location = New System.Drawing.Point(114, 70)
+        Me.BtnEdit.Location = New System.Drawing.Point(99, 70)
         Me.BtnEdit.Name = "BtnEdit"
-        Me.BtnEdit.Size = New System.Drawing.Size(161, 33)
+        Me.BtnEdit.Size = New System.Drawing.Size(191, 33)
         Me.BtnEdit.TabIndex = 2
         Me.BtnEdit.Text = "Edit File List"
         Me.ToolTip1.SetToolTip(Me.BtnEdit, "Provides a way to make manual changes to your file list database.")
@@ -58,9 +58,9 @@ Partial Class F_Advanced
         'BtnUpdate
         '
         Me.BtnUpdate.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnUpdate.Location = New System.Drawing.Point(114, 121)
+        Me.BtnUpdate.Location = New System.Drawing.Point(99, 121)
         Me.BtnUpdate.Name = "BtnUpdate"
-        Me.BtnUpdate.Size = New System.Drawing.Size(161, 33)
+        Me.BtnUpdate.Size = New System.Drawing.Size(191, 33)
         Me.BtnUpdate.TabIndex = 3
         Me.BtnUpdate.Text = "Update File List"
         Me.ToolTip1.SetToolTip(Me.BtnUpdate, "Updates your database to match the files you have on your disk.")
@@ -69,13 +69,14 @@ Partial Class F_Advanced
         'BtnCompare
         '
         Me.BtnCompare.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnCompare.Location = New System.Drawing.Point(114, 172)
+        Me.BtnCompare.Location = New System.Drawing.Point(99, 172)
         Me.BtnCompare.Name = "BtnCompare"
-        Me.BtnCompare.Size = New System.Drawing.Size(161, 33)
+        Me.BtnCompare.Size = New System.Drawing.Size(191, 33)
         Me.BtnCompare.TabIndex = 4
         Me.BtnCompare.Text = "Compare With Master"
         Me.ToolTip1.SetToolTip(Me.BtnCompare, "Compares your database with a file created from the Master Cloud Storage collecti" &
-        "on.  Use Update File List first for best results.")
+        "on." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "For best results, use Update File List first so that your database is accur" &
+        "ate.")
         Me.BtnCompare.UseVisualStyleBackColor = True
         '
         'ChkAutoSelectList
@@ -87,9 +88,12 @@ Partial Class F_Advanced
         Me.ChkAutoSelectList.Size = New System.Drawing.Size(333, 22)
         Me.ChkAutoSelectList.TabIndex = 5
         Me.ChkAutoSelectList.Text = "Automatically add all files I use to the Short List"
-        Me.ToolTip1.SetToolTip(Me.ChkAutoSelectList, "Files that you add to a Play List or show using Instant Play will be permanently " &
-        "denoted as ""Selected"".")
+        Me.ToolTip1.SetToolTip(Me.ChkAutoSelectList, "Files that you add to a Play List or show using Instant Play will be permanently" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "added to the Short List")
         Me.ChkAutoSelectList.UseVisualStyleBackColor = True
+        '
+        'ToolTip1
+        '
+        Me.ToolTip1.OwnerDraw = True
         '
         'ChkDebug
         '

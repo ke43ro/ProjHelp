@@ -2,7 +2,7 @@
 
 Public Class F_UpdateFileList
     'Private connection As SqlConnection
-    Private iNoFile As Integer
+    Private iNoFile As Integer, isVerbose As Boolean = False
     Private bFoundActive, bNewSelect As Boolean
     Const iInactive As Integer = 1
     Const iDeleteAll As Integer = 2
@@ -35,7 +35,7 @@ Public Class F_UpdateFileList
         If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
             TxtFolder.Text = FolderBrowserDialog1.SelectedPath
         End If
-        If Dir(TxtFolder.Text) = "" Then
+        If Dir(TxtFolder.Text, vbDirectory) = "" Then
             myMsgBox.Show("I can't find folder " & TxtFolder.Text & ".  Please try again", "Update Files List",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
@@ -64,15 +64,21 @@ Public Class F_UpdateFileList
         DupesReturn = szParts(1)
         ListBox1.Items.Add("During deduplication, " & DupesReturn)
 
-        If Dir(TxtFolder.Text, vbDirectory) = "" Then
-            myMsgBox.Show("I can't find folder " & TxtFolder.Text & ".  Please choose another.", "Update Files List",
+        Dim szFolder As String = TxtFolder.Text
+        If Dir(szFolder, vbDirectory) = "" Then
+            myMsgBox.Show("I can't find folder " & szFolder & ".  Please choose another.", "Update Files List",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
             Cursor = Cursors.Default
             Exit Sub
         End If
 
-        Dim T_DiskFiles = CreateTableDF()
-        Dim DiskReturn As Integer = GetFiles(T_DiskFiles)
+        'Dim T_DiskFiles As DataTable = CreateTableDF()
+        'Dim DiskReturn As Integer = GetFiles(T_DiskFiles)
+        Dim myPPTs As GetFiles, T_DiskFiles As DataTable
+        myPPTs = New GetFiles()
+        T_DiskFiles = myPPTs.GetPPs(szFolder)
+        Dim DiskReturn As Integer = T_DiskFiles.Rows.Count
+
         If DiskReturn = 0 Then
             myMsgBox.Show("No files were found in the specified folder structure", "Update Files List",
                             MessageBoxButtons.OK, MessageBoxIcon.Stop)
@@ -221,21 +227,21 @@ Public Class F_UpdateFileList
     End Function
 
 
-    Private Function CreateTableDF() As DataTable
-        Dim myTable As New DataTable("T_DiskFiles")
-        Dim keys(2) As DataColumn
+    'Private Function CreateTableDF() As DataTable
+    '    Dim myTable As New DataTable("T_DiskFiles")
+    '    Dim keys(2) As DataColumn
 
-        myTable.Columns.Add("f_path", Type.GetType("System.String"))
-        myTable.Columns.Add("f_name", Type.GetType("System.String"))
-        myTable.Columns.Add("fullpath", Type.GetType("System.String"))
-        myTable.Columns.Add("status", Type.GetType("System.Int32"))
-        ' status: 0=file found; 1=file matched db
-        keys(0) = myTable.Columns(0)
-        keys(1) = myTable.Columns(1)
-        myTable.PrimaryKey = keys
+    '    myTable.Columns.Add("f_path", Type.GetType("System.String"))
+    '    myTable.Columns.Add("f_name", Type.GetType("System.String"))
+    '    myTable.Columns.Add("fullpath", Type.GetType("System.String"))
+    '    myTable.Columns.Add("status", Type.GetType("System.Int32"))
+    '    ' status: 0=file found; 1=file matched db
+    '    keys(0) = myTable.Columns(0)
+    '    keys(1) = myTable.Columns(1)
+    '    myTable.PrimaryKey = keys
 
-        CreateTableDF = myTable
-    End Function
+    '    CreateTableDF = myTable
+    'End Function
 
 
     Private Sub ResultAddDF(myTable As DataTable, s1 As String, s2 As String, i1 As Integer)
@@ -249,49 +255,51 @@ Public Class F_UpdateFileList
     End Sub
 
 
-    Private Function GetFiles(T_diskfiles As DataTable) As Integer
-        Dim szPath As String, NextFile As String
-        Dim AllDirs(30) As String, NextDir As String, i As Integer
+    'Private Function GetFiles(T_diskfiles As DataTable) As Integer
+    '    Dim szPath As String, NextFile As String, myPPTs As GetFiles
+    '    Dim AllDirs(30) As String, NextDir As String, i As Integer
 
-        'txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files..."
-        Dim szFolder As String = TxtFolder.Text
+    '    txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files..."
+    '    Dim szFolder As String = TxtFolder.Text
 
-        GetFiles = 0
-        i = 0
-        NextDir = Dir(szFolder & "\*", 16)
+    '     get all PowerPoint files in the specified folder
 
-        While NextDir <> ""
-            Select Case NextDir
-                Case ".", ".."
-                Case Else
-                    If Len(NextDir) = 1 Then
-                        AllDirs(i) = szFolder & "\" & NextDir
-                        i += 1
-                    End If
-            End Select
-            NextDir = Dir()
-        End While
+    '    GetFiles = 0
+    '    i = 0
+    '    NextDir = Dir(szFolder & "\*", 16)
 
-        If i = 0 Then
-            myMsgBox.Show("There are no alpha folders here:" & vbCrLf &
-                szFolder & vbCrLf & "Please locate a Parklea songs MASTERS folder",
-                "Update File List", MessageBoxButtons.OK, MessageBoxIcon.Stop)
-            Exit Function
-        End If
+    '    While NextDir <> ""
+    '        Select Case NextDir
+    '            Case ".", ".."
+    '            Case Else
+    '                If Len(NextDir) = 1 Then
+    '                    AllDirs(i) = szFolder & "\" & NextDir
+    '                    i += 1
+    '                End If
+    '        End Select
+    '        NextDir = Dir()
+    '    End While
 
-        For Each szPath In AllDirs
-            NextFile = Dir(szPath & "\*.*", 0)
-            While NextFile <> "" ' j <4
-                Select Case NextFile.Substring(NextFile.Length - 4, 4)
-                    Case ".ppt", "pptx", ".PPT", "PPTX"
-                        ResultAddDF(T_diskfiles, szPath, NextFile, 0)
-                End Select
-                NextFile = Dir()
-            End While
-        Next szPath
+    '    If i = 0 Then
+    '        myMsgBox.Show("There are no alpha folders here:" & vbCrLf &
+    '            szFolder & vbCrLf & "Please locate a Parklea songs MASTERS folder",
+    '            "Update File List", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+    '        Exit Function
+    '    End If
 
-        GetFiles = T_diskfiles.Rows.Count
-    End Function
+    '    For Each szPath In AllDirs
+    '        NextFile = Dir(szPath & "\*.*", 0)
+    '        While NextFile <> "" ' j <4
+    '            Select Case NextFile.Substring(NextFile.Length - 4, 4)
+    '                Case ".ppt", "pptx", ".PPT", "PPTX"
+    '                    ResultAddDF(T_diskfiles, szPath, NextFile, 0)
+    '            End Select
+    '            NextFile = Dir()
+    '        End While
+    '    Next szPath
+
+    '    GetFiles = T_diskfiles.Rows.Count
+    'End Function
 
     Private Function CheckExistingFiles(T_diskfiles As DataTable) As String
         Dim DBFiles As New DataView(T_filesTable, "", "f_path, f_name", DataViewRowState.CurrentRows)
@@ -308,7 +316,7 @@ Public Class F_UpdateFileList
         nIgnoreInactive = 0
         nNoChange = 0
         'CheckExistingFiles = "0" & vbTab & "Nothing done yet"
-        DiskFiles.Sort = "fullpath"
+        DiskFiles.Sort = "FilePath"
 
         For Each DBFile As DataRowView In DBFiles
             szPath = DBFile.Row.Item("f_path")
@@ -425,7 +433,7 @@ Public Class F_UpdateFileList
                         nIgnoreInactive += 1
                     End If
                 Else
-                    ListBox1.Items.Add(szFullPath & ": On disk, marked as active, no change necessary")
+                    If isVerbose Then ListBox1.Items.Add(szFullPath & ": On disk, marked as active, no change necessary")
                     nNoChange += 1
                 End If
             End If
@@ -437,10 +445,6 @@ Public Class F_UpdateFileList
         DBFiles.Dispose()
     End Function
 
-    Private Sub GroupBox2_Enter(sender As Object, e As EventArgs) Handles GroupBox2.Enter
-
-    End Sub
-
     Private Function CheckNewFiles(T_diskfiles As DataTable) As String
         Dim nFiles As Integer = 0
         Dim DiskFiles As DataView = T_diskfiles.AsDataView
@@ -449,12 +453,32 @@ Public Class F_UpdateFileList
         CheckNewFiles = "0" & vbTab & "No new files found"
         For Each myRow In DiskFiles.FindRows(0)
             nFiles += 1
-            '     Public Sub Insert(fileName As String, filePath As String, isShort As Boolean)
-            T_filesTable.Insert(myRow.Item("f_name"), myRow.Item("f_path"), bNewSelect, "New file added")
-            ListBox1.Items.Add("New file found and added to the table: " & myRow.Item("f_path") & "\" & myRow.Item("f_name"))
+            T_filesTable.Insert(myRow.Item("Filename"), myRow.Item("FilePath"), bNewSelect, "New file added")
+            ListBox1.Items.Add("New file found and added to the table: " & myRow.Item("FilePath") & "\" & myRow.Item("FileName"))
         Next
         T_filesTable.AcceptChanges()
         If nFiles > 0 Then CheckNewFiles = nFiles & " " & vbTab & "New files found and added"
         DiskFiles.Dispose()
     End Function
+
+    Private Sub ToolTip1_Draw(sender As Object, e As DrawToolTipEventArgs) Handles ToolTip1.Draw
+        e.Graphics.FillRectangle(Brushes.LightYellow, e.Bounds)
+        e.Graphics.DrawRectangle(Pens.Black, New Rectangle(0, 0, e.Bounds.Width - 1, e.Bounds.Height - 1))
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            e.Graphics.DrawString(e.ToolTipText, f, Brushes.Black, New PointF(2, 2))
+        End Using
+    End Sub
+
+    Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
+        isVerbose = CheckBox1.Checked
+    End Sub
+
+    Private Sub ToolTip1_Popup(sender As Object, e As PopupEventArgs) Handles ToolTip1.Popup
+        Using f As New Font("Segoe UI", 10, FontStyle.Regular)
+            Dim textSize = TextRenderer.MeasureText(ToolTip1.GetToolTip(e.AssociatedControl), f, New Size(600, 0), TextFormatFlags.WordBreak)
+            ' Add a little padding
+            e.ToolTipSize = New Size(Math.Min(textSize.Width, 600), textSize.Height + 4)
+        End Using
+    End Sub
+
 End Class

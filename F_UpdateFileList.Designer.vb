@@ -26,6 +26,7 @@ Partial Class F_UpdateFileList
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(F_UpdateFileList))
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.TextBox4 = New System.Windows.Forms.TextBox()
         Me.RBtnMakeSelect = New System.Windows.Forms.RadioButton()
@@ -33,6 +34,7 @@ Partial Class F_UpdateFileList
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.TextBox2 = New System.Windows.Forms.TextBox()
         Me.RBtnMakeActive = New System.Windows.Forms.RadioButton()
+        Me.RBtnNoActive = New System.Windows.Forms.RadioButton()
         Me.BtnUpdate = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.RBtnDeleteThis = New System.Windows.Forms.RadioButton()
@@ -44,7 +46,6 @@ Partial Class F_UpdateFileList
         Me.BtnBrowse = New System.Windows.Forms.Button()
         Me.TxtFolder = New System.Windows.Forms.TextBox()
         Me.ListBox1 = New System.Windows.Forms.ListBox()
-        Me.RBtnNoActive = New System.Windows.Forms.RadioButton()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -66,6 +67,7 @@ Partial Class F_UpdateFileList
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.CheckBox1)
         Me.GroupBox1.Controls.Add(Me.GroupBox4)
         Me.GroupBox1.Controls.Add(Me.GroupBox3)
         Me.GroupBox1.Controls.Add(Me.BtnUpdate)
@@ -79,11 +81,24 @@ Partial Class F_UpdateFileList
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Update the File List"
         '
+        'CheckBox1
+        '
+        Me.CheckBox1.AutoSize = True
+        Me.CheckBox1.Location = New System.Drawing.Point(191, 342)
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.Size = New System.Drawing.Size(136, 22)
+        Me.CheckBox1.TabIndex = 16
+        Me.CheckBox1.Text = "Verbose Results"
+        Me.ToolTip1.SetToolTip(Me.CheckBox1, "In Verbose mode, the results will include a report on every file.  Otherwise only" &
+        " changes are reported")
+        Me.CheckBox1.UseVisualStyleBackColor = True
+        '
         'GroupBox4
         '
         Me.GroupBox4.Controls.Add(Me.TextBox4)
         Me.GroupBox4.Controls.Add(Me.RBtnMakeSelect)
         Me.GroupBox4.Controls.Add(Me.RBtnNoSelect)
+        Me.GroupBox4.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox4.Location = New System.Drawing.Point(7, 247)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(915, 83)
@@ -95,6 +110,7 @@ Partial Class F_UpdateFileList
         '
         Me.TextBox4.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox4.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.TextBox4.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TextBox4.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TextBox4.Location = New System.Drawing.Point(8, 19)
         Me.TextBox4.Multiline = True
@@ -104,11 +120,12 @@ Partial Class F_UpdateFileList
         Me.TextBox4.TabIndex = 6
         Me.TextBox4.TabStop = False
         Me.TextBox4.Text = "If a file that was not listed in the database is found on the disk, it will be ad" &
-    "ded to the database and you can select a further action:"
+    "ded to the database" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "and you can select a further action:"
         '
         'RBtnMakeSelect
         '
         Me.RBtnMakeSelect.AutoSize = True
+        Me.RBtnMakeSelect.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBtnMakeSelect.Location = New System.Drawing.Point(30, 37)
         Me.RBtnMakeSelect.Name = "RBtnMakeSelect"
         Me.RBtnMakeSelect.Size = New System.Drawing.Size(709, 22)
@@ -116,21 +133,23 @@ Partial Class F_UpdateFileList
         Me.RBtnMakeSelect.TabStop = True
         Me.RBtnMakeSelect.Text = "Alter the file status to SELECTED so that it will now appear in the selection sho" &
     "rt list (RECOMMENDED)"
-        Me.ToolTip1.SetToolTip(Me.RBtnMakeSelect, "Files found on the disk that were not previously in the database have probebly be" &
-        "en recently added so they are probably wanted on the Short List.")
+        Me.ToolTip1.SetToolTip(Me.RBtnMakeSelect, "Files found on the disk that were not previously in the database have probably be" &
+        "en recently" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "added so you probably want them on the Short List.")
         Me.RBtnMakeSelect.UseVisualStyleBackColor = True
         '
         'RBtnNoSelect
         '
         Me.RBtnNoSelect.AutoSize = True
+        Me.RBtnNoSelect.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBtnNoSelect.Location = New System.Drawing.Point(30, 57)
         Me.RBtnNoSelect.Name = "RBtnNoSelect"
         Me.RBtnNoSelect.Size = New System.Drawing.Size(124, 22)
         Me.RBtnNoSelect.TabIndex = 0
         Me.RBtnNoSelect.TabStop = True
         Me.RBtnNoSelect.Text = "Take no action"
-        Me.ToolTip1.SetToolTip(Me.RBtnNoSelect, "New files found on the disk will be listed as Active in the database, but the Pow" &
-        "erPoint Link operator will have to turn off the Short List option to see them.")
+        Me.ToolTip1.SetToolTip(Me.RBtnNoSelect, "New files found on the disk will be listed as Active in the database, but to see " &
+        "these, the operator" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "will have to turn off the option to only show Short List fi" &
+        "les")
         Me.RBtnNoSelect.UseVisualStyleBackColor = True
         '
         'GroupBox3
@@ -139,6 +158,7 @@ Partial Class F_UpdateFileList
         Me.GroupBox3.Controls.Add(Me.RBtnMakeActive)
         Me.GroupBox3.Controls.Add(Me.RBtnNoActive)
         Me.GroupBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.GroupBox3.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox3.Location = New System.Drawing.Point(7, 150)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Size = New System.Drawing.Size(915, 88)
@@ -150,6 +170,7 @@ Partial Class F_UpdateFileList
         '
         Me.TextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox2.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.TextBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TextBox2.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TextBox2.Location = New System.Drawing.Point(9, 21)
         Me.TextBox2.Multiline = True
@@ -164,6 +185,7 @@ Partial Class F_UpdateFileList
         'RBtnMakeActive
         '
         Me.RBtnMakeActive.AutoSize = True
+        Me.RBtnMakeActive.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBtnMakeActive.Location = New System.Drawing.Point(30, 40)
         Me.RBtnMakeActive.Name = "RBtnMakeActive"
         Me.RBtnMakeActive.Size = New System.Drawing.Size(643, 22)
@@ -171,11 +193,27 @@ Partial Class F_UpdateFileList
         Me.RBtnMakeActive.TabStop = True
         Me.RBtnMakeActive.Text = "Alter the file status to ACTIVE so that it will now appear in the selection list " &
     "(RECOMMENDED)"
+        Me.ToolTip1.SetToolTip(Me.RBtnMakeActive, "Since you have the file on disk, making this change allows the operator to see it" &
+        " in the lists.")
         Me.RBtnMakeActive.UseVisualStyleBackColor = True
+        '
+        'RBtnNoActive
+        '
+        Me.RBtnNoActive.AutoSize = True
+        Me.RBtnNoActive.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.RBtnNoActive.Location = New System.Drawing.Point(30, 62)
+        Me.RBtnNoActive.Name = "RBtnNoActive"
+        Me.RBtnNoActive.Size = New System.Drawing.Size(124, 22)
+        Me.RBtnNoActive.TabIndex = 0
+        Me.RBtnNoActive.TabStop = True
+        Me.RBtnNoActive.Text = "Take no action"
+        Me.ToolTip1.SetToolTip(Me.RBtnNoActive, "Although the file is found on the disk, its Inactive status will prevent the oper" &
+        "ator from using it.")
+        Me.RBtnNoActive.UseVisualStyleBackColor = True
         '
         'BtnUpdate
         '
-        Me.BtnUpdate.Location = New System.Drawing.Point(384, 336)
+        Me.BtnUpdate.Location = New System.Drawing.Point(559, 336)
         Me.BtnUpdate.Name = "BtnUpdate"
         Me.BtnUpdate.Size = New System.Drawing.Size(161, 33)
         Me.BtnUpdate.TabIndex = 6
@@ -189,6 +227,7 @@ Partial Class F_UpdateFileList
         Me.GroupBox2.Controls.Add(Me.RBtnMakeInactive)
         Me.GroupBox2.Controls.Add(Me.TextBox3)
         Me.GroupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.GroupBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox2.Location = New System.Drawing.Point(7, 21)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(915, 122)
@@ -199,6 +238,7 @@ Partial Class F_UpdateFileList
         'RBtnDeleteThis
         '
         Me.RBtnDeleteThis.AutoSize = True
+        Me.RBtnDeleteThis.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBtnDeleteThis.Location = New System.Drawing.Point(30, 100)
         Me.RBtnDeleteThis.Name = "RBtnDeleteThis"
         Me.RBtnDeleteThis.Size = New System.Drawing.Size(879, 22)
@@ -207,12 +247,13 @@ Partial Class F_UpdateFileList
         Me.RBtnDeleteThis.Text = "Delete the file record and remove it from any Play List where it appears.  This w" &
     "ill somewhat affect any history that you are keeping."
         Me.ToolTip1.SetToolTip(Me.RBtnDeleteThis, "The Play List names and show times will remain in the database, but the relevant " &
-        "song will be missing from the list")
+        "song" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "will be missing from the list")
         Me.RBtnDeleteThis.UseVisualStyleBackColor = True
         '
         'RBtnDeleteAll
         '
         Me.RBtnDeleteAll.AutoSize = True
+        Me.RBtnDeleteAll.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBtnDeleteAll.Location = New System.Drawing.Point(30, 79)
         Me.RBtnDeleteAll.Name = "RBtnDeleteAll"
         Me.RBtnDeleteAll.Size = New System.Drawing.Size(862, 22)
@@ -227,6 +268,7 @@ Partial Class F_UpdateFileList
         'RBtnMakeInactive
         '
         Me.RBtnMakeInactive.AutoSize = True
+        Me.RBtnMakeInactive.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBtnMakeInactive.Location = New System.Drawing.Point(30, 57)
         Me.RBtnMakeInactive.Name = "RBtnMakeInactive"
         Me.RBtnMakeInactive.Size = New System.Drawing.Size(691, 22)
@@ -241,6 +283,7 @@ Partial Class F_UpdateFileList
         '
         Me.TextBox3.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox3.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.TextBox3.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TextBox3.ForeColor = System.Drawing.SystemColors.WindowText
         Me.TextBox3.Location = New System.Drawing.Point(8, 21)
         Me.TextBox3.Multiline = True
@@ -251,20 +294,25 @@ Partial Class F_UpdateFileList
         Me.TextBox3.TabStop = False
         Me.TextBox3.Text = resources.GetString("TextBox3.Text")
         '
+        'ToolTip1
+        '
+        Me.ToolTip1.OwnerDraw = True
+        '
         'BtnBrowse
         '
         Me.BtnBrowse.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnBrowse.Location = New System.Drawing.Point(570, 94)
+        Me.BtnBrowse.Location = New System.Drawing.Point(570, 95)
         Me.BtnBrowse.Name = "BtnBrowse"
-        Me.BtnBrowse.Size = New System.Drawing.Size(179, 25)
+        Me.BtnBrowse.Size = New System.Drawing.Size(161, 33)
         Me.BtnBrowse.TabIndex = 30
-        Me.BtnBrowse.Text = "Browse for MASTERS folder"
+        Me.BtnBrowse.Text = "Change folder"
         Me.BtnBrowse.UseVisualStyleBackColor = True
         '
         'TxtFolder
         '
+        Me.TxtFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtFolder.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtFolder.Location = New System.Drawing.Point(202, 95)
+        Me.TxtFolder.Location = New System.Drawing.Point(202, 100)
         Me.TxtFolder.Name = "TxtFolder"
         Me.TxtFolder.Size = New System.Drawing.Size(353, 24)
         Me.TxtFolder.TabIndex = 29
@@ -281,19 +329,6 @@ Partial Class F_UpdateFileList
         Me.ListBox1.Size = New System.Drawing.Size(928, 256)
         Me.ListBox1.TabIndex = 31
         '
-        'RBtnNoActive
-        '
-        Me.RBtnNoActive.AutoSize = True
-        Me.RBtnNoActive.Location = New System.Drawing.Point(30, 62)
-        Me.RBtnNoActive.Name = "RBtnNoActive"
-        Me.RBtnNoActive.Size = New System.Drawing.Size(124, 22)
-        Me.RBtnNoActive.TabIndex = 0
-        Me.RBtnNoActive.TabStop = True
-        Me.RBtnNoActive.Text = "Take no action"
-        Me.ToolTip1.SetToolTip(Me.RBtnNoActive, "Although the file is found on the disk, its Inactive status will prevent the oper" &
-        "ator from using it.")
-        Me.RBtnNoActive.UseVisualStyleBackColor = True
-        '
         'F_UpdateFileList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -307,6 +342,7 @@ Partial Class F_UpdateFileList
         Me.Name = "F_UpdateFileList"
         Me.Text = "Update the File List"
         Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
         Me.GroupBox3.ResumeLayout(False)
@@ -338,4 +374,5 @@ Partial Class F_UpdateFileList
     Friend WithEvents TxtFolder As TextBox
     Friend WithEvents ListBox1 As ListBox
     Friend WithEvents RBtnNoActive As RadioButton
+    Friend WithEvents CheckBox1 As CheckBox
 End Class

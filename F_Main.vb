@@ -3,10 +3,11 @@ Imports LibVLCSharp.Shared
 
 
 Partial Class F_Main
-    Friend isDebug As Boolean
     Friend isAutoShort As Boolean
     Friend ProjHelpData As New PHServer
+    Friend isDebug As Boolean = My.Settings.Debug
 
+    Private ReadOnly protoVersion As String = "2.1.0.35"
     Private ReadOnly PlayList As New PlayList
     Private ReadOnly myMsgBox As New DlgMsgBox
     Private isShort As Boolean = False
@@ -30,18 +31,17 @@ Partial Class F_Main
 
     ' *** Section Form Load, Updates, set up ***
     Private Sub F_Main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
         If ProjHelpData.ConnectDatabase() Is Nothing Then
             myMsgBox.Show("Unable to connect to the database.",
-                            "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End If
 
         Dim szVersion As String = GetPublishVersion()
         If szVersion = "Proto" Then
-            LblVersion.Text = "Version 2.1.0.9 Proto"
-            szVersion = "2.1.0.9"
+            LblVersion.Text = "Version " & protoVersion & " Proto"
+            szVersion = protoVersion
         Else
             LblVersion.Text = "Version " & szVersion
         End If
@@ -91,7 +91,7 @@ Partial Class F_Main
             myScreen = Screen.AllScreens(0)
         Else
             For Each thisScreen In Screen.AllScreens
-                If isDebug Then
+                If IsDebug Then
                     Dim szTemp = "Top: " + thisScreen.Bounds.Top.ToString + "; Left: " + thisScreen.Bounds.Left.ToString +
                      "; Height: " + thisScreen.Bounds.Height.ToString + "; Width: " + thisScreen.Bounds.Width.ToString +
                      "; Location: " + thisScreen.Bounds.Location.ToString & "; Prim: " & thisScreen.Primary
@@ -148,7 +148,7 @@ Partial Class F_Main
 
     Private Function DoUpdates(priorVersion As String, db As PHServer) As String
         Try
-            If isDebug Then myMsgBox.Show("priorVersion is " & priorVersion)
+            If IsDebug Then myMsgBox.Show("priorVersion is " & priorVersion)
             If priorVersion = "" Then
                 ' Initial installation. Latest version of database will have been installed through Set Up
                 DoUpdates = "No Action: Initial Installation"
@@ -162,6 +162,28 @@ Partial Class F_Main
                     Case ""
                         ' Initial run
                         DoUpdates = "No Action: First run|2.0.0.1"
+
+                    Case < "002.001.000.028"
+                        ' Change database locatiopn to ensure that updates keep the data
+                        Dim DataFolder As String = My.Settings.DataFolder
+                        Dim NewLocation As String = FileIO.SpecialDirectories.ProgramFiles.Replace(" Files", "Data") & DataFolder
+                        Dim Location As String = My.Settings.DatabaseLocation
+                        If Location <> NewLocation Then
+                            Location = NewLocation
+                            If Not IO.Directory.Exists(Location) Then
+                                Try
+                                    IO.Directory.CreateDirectory(Location)
+                                Catch ex As Exception
+                                    Return "Failed: Data directory " & Location & " not created|" & priorVersion
+                                End Try
+                            End If
+                            My.Settings.DatabaseLocation = Location
+                            My.Settings.Save()
+
+                            DoUpdates = "Success: Database location changed to " & Location & "|2.1.0.28"
+                        Else
+                            DoUpdates = "No action: Database location not changed|2.1.0.28"
+                        End If
 
                         ' Sample of case code saved from PPLink
                         'Case < "001.004.000.036"
@@ -348,6 +370,10 @@ Partial Class F_Main
     End Sub
 
     Private Sub BtnPlay_Click(sender As Object, e As EventArgs) Handles BtnPlay.Click
+        DoPlayList()
+    End Sub
+
+    Private Sub DoPlayList()
         If LBPlayList.Items.Count = 0 Then
             myMsgBox.Show("Please add some items to the list",
                             "Playing the list", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -393,18 +419,12 @@ Partial Class F_Main
     Private Sub ChkShortList_CheckedChanged(sender As Object, e As EventArgs) Handles ChkShortList.CheckedChanged
         isShort = ChkShortList.Checked
 
-        'If szDebug = "Yes" Then MyMsgBox.Show("ChkChgd - Check if Files Initialized. Conn String=" &
-        '   T_filesTable.Connection.ConnectionString)
-
         If myStatus = "Loaded" Then
-            'If szDebug = "Yes" Then MyMsgBox.Show("ChkChgd - Files Initialized: Fill")
             T_filesTable.LoadByPhrase(isShort, TxtSearch.Text)
-            'If szDebug = "Yes" Then MyMsgBox.Show("ChkChgd - Files Initialized: Save settings")
             My.Settings.SelectedOnly = isShort
             My.Settings.Save()
         End If
 
-        'If szDebug = "Yes" Then MyMsgBox.Show("ChkShortList_CheckedChanged Done")
     End Sub
 
     Private Sub TfilesDataGridView_RunCurrent()
@@ -462,29 +482,42 @@ Partial Class F_Main
         Dim files() As String = e.Data.GetData(DataFormats.FileDrop)
         Dim File As String
 
+        'MessageBox.Show("DragDrop")
         For Each path In files
+            'MessageBox.Show("Adding " & path, "Drag and Drop", MessageBoxButtons.OK, MessageBoxIcon.Information)
             File = ChkPath(path)
             If File <> "" Then
+                'MessageBox.Show("Adding " & File, "Drag and Drop", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 LBPlayList.Items.Add(File)
             End If
         Next
 
     End Sub
+    Private Sub LBPlayList_DragEnter(sender As Object, e As DragEventArgs) Handles LBPlayList.DragEnter
+        'MessageBox.Show("DragEnter")
+        If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+            e.Effect = DragDropEffects.Copy
+        End If
+    End Sub
+
 
     Private Function ChkPath(Path) As String
         Dim myMedia As Media
         Dim myPath = Path.ToString
         Dim Extn = GetExtn(Path)
 
+        'MessageBox.Show("ChkPath opened, found extn [" & Extn & "]", "ChkPath", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Select Case Extn
             Case ".ppt", ".pptx", ".pptm", ".doc", ".docx", ".pdf"
                 ' All good
+                'MessageBox.Show("Adding " & myPath, "ChkPath", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
             Case Else
                 myMedia = GetMedia(Path)
+                'MessageBox.Show("Adding media at " & myPath, "ChkPath", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 If myMedia Is Nothing Then
                     myMsgBox.Show("Sorry, I don't know how to process [" & Path & "]")
-                    myPath = ""
+                    Return ""
                 End If
 
         End Select
@@ -506,14 +539,8 @@ Partial Class F_Main
             Extn = Path.Substring(idx)
         End If
 
-        Return Extn
+        Return Extn.ToLower()
     End Function
-
-    Private Sub LBPlayList_DragEnter(sender As Object, e As DragEventArgs) Handles LBPlayList.DragEnter
-        If e.Data.GetDataPresent(DataFormats.FileDrop) Then
-            e.Effect = DragDropEffects.Copy
-        End If
-    End Sub
 
     Private Sub LBPlayList_KeyDown(sender As Object, e As KeyEventArgs) Handles LBPlayList.KeyDown
         Dim iSelected As Integer = LBPlayList.SelectedIndex
@@ -549,6 +576,10 @@ Partial Class F_Main
     Private Sub LBPlayList_KeyPress(sender As Object, e As KeyPressEventArgs) Handles LBPlayList.KeyPress
         Dim iSelected As Integer = LBPlayList.SelectedIndex
         Dim szQueue As New Queue(Of String)
+
+        If AscW(e.KeyChar) = 16 Then ' Ctrl p
+            DoPlayList()
+        End If
 
         Select Case e.KeyChar
             ' Delete key doesn't generate a KeyPress
@@ -704,9 +735,6 @@ Partial Class F_Main
         Return myMedia
     End Function
 
-    Private Sub Label6_Click(sender As Object, e As EventArgs) Handles Label6.Click
-
-    End Sub
 
     ' *** Section test routines ***
     ' Used to analyse the results of KeyDown and KeyPress events
@@ -730,18 +758,24 @@ Partial Class F_Main
     '    messageBoxVB.AppendLine()
     '    messageBoxVB.AppendFormat("{0} = {1}", "SuppressKeyPress", e.SuppressKeyPress)
     '    messageBoxVB.AppendLine()
-    '    MyMsgBox.Show(messageBoxVB.ToString(), "KeyDown Event")
+    '    myMsgBox.Show(messageBoxVB.ToString(), "KeyDown Event")
 
     'End Sub
 
     'Private Sub TextBox1_KeyPress(sender As Object, e As KeyPressEventArgs) 'Handles TextBox1.KeyPress
+    '    If e.KeyChar = "p"c AndAlso Control.ModifierKeys = Keys.ControlKey Then
+    '        MessageBox.Show("Ctrl+P was pressed", "KeyPress Event")
+    '        Return
+    '    End If
+
     '    Dim messageBoxVB As New System.Text.StringBuilder()
-    '    messageBoxVB.AppendFormat("{0} = {1}", "Char", e.KeyChar)
+
+    '    messageBoxVB.AppendFormat("{0} = {1} ({2})", "Char", e.KeyChar, AscW(e.KeyChar))
     '    messageBoxVB.AppendLine()
     '    'messageBoxVB.AppendFormat("{0} = {1}", "Control", e.Control)
     '    'messageBoxVB.AppendLine()
-    '    'messageBoxVB.AppendFormat("{0} = {1}", "Handled", e.Handled)
-    '    'messageBoxVB.AppendLine()
+    '    messageBoxVB.AppendFormat("{0} = {1}", "Handled", e.Handled)
+    '    messageBoxVB.AppendLine()
     '    'messageBoxVB.AppendFormat("{0} = {1}", "KeyCode", e.KeyCode)
     '    'messageBoxVB.AppendLine()
     '    'messageBoxVB.AppendFormat("{0} = {1}", "KeyValue", e.KeyValue)
@@ -753,14 +787,20 @@ Partial Class F_Main
     '    'messageBoxVB.AppendFormat("{0} = {1}", "Shift", e.Shift)
     '    'messageBoxVB.AppendLine()
     '    'messageBoxVB.AppendFormat("{0} = {1}", "SuppressKeyPress", e.SuppressKeyPress)
-    '    'messageBoxVB.AppendLine()
-    '    MyMsgBox.Show(messageBoxVB.ToString(), "KeyDown Event")
-
+    '    messageBoxVB.AppendLine()
+    '    myMsgBox.Show(messageBoxVB.ToString(), "KeyDown Event")
+    '
     'End Sub
 End Class
 
 'Version number
 'Z.Y.X.W - Z.Y.X is {major version}.{minor version}.{build}; W is VS publish number.  Missing publish numbers were used in testing
+'2.1.0.35   Added location of the database to the settings so that updates can find and preserve it.
+'           Debugging of drag and drop problems
+'2.1.0.18   Updated documentation
+'2.1.0.17   Patched around bugs related to DataGridView that triggered exceptions in the Winforms accessibility code
+'           Fixed a bug in Compare with Master
+'2.1.0.16   Fixed bug in new files table creation: file name included in path; improved management of search column
 '2.1.0.9    Added support for hierarchical file management (abstract search of the disk into a separate class)
 '           further tweaks to UI including more readable tooltips on forms
 '2.0.0.8    Bypassed Winforms bug in double-click on DataGridView header; tidy main screen and add more details to instructions

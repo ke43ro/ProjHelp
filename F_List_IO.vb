@@ -20,7 +20,7 @@ Public Class F_List_IO
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
         Dim fViewRow As DataRowView
         Dim filePath As String = ""
-        Dim fileName, szF_name, szF_path, szF_altname, szSelected, szInactive As String
+        Dim fileName, szF_name, szF_path, szF_altname, szShortList, szActive As String
         Dim iRandom As New Random
 
         filesView = T_filesTable.DefaultView
@@ -31,12 +31,12 @@ Public Class F_List_IO
             Exit Sub
         Else
             filesView.Sort = "f_name"
-            fileName = "PPLink" & iRandom.Next & ".txt"
+            fileName = "ProjHelp" & iRandom.Next & ".txt"
 
             Try
                 filePath = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, fileName)
                 My.Computer.FileSystem.WriteAllText(filePath,
-                    "F_name" & vbTab & "F_Path" & vbTab & "F_altname" & vbTab & "Selected" & vbTab & "Inactive" & vbCrLf,
+                    "F_name" & vbTab & "F_Path" & vbTab & "F_altname" & vbTab & "ShortList" & vbTab & "Active" & vbCrLf,
                      False)
             Catch fileException As Exception
                 MyMsgBox.Show("Failed to create file " & filePath, "Projection Helper Export",
@@ -50,10 +50,10 @@ Public Class F_List_IO
                 szF_name = fViewRow("F_NAME")
                 szF_path = fViewRow("F_PATH")
                 szF_altname = IIf(IsDBNull(fViewRow("F_ALTNAME")), "", fViewRow("F_ALTNAME"))
-                szSelected = IIf(IsDBNull(fViewRow("ISSHORTLIST")), "", fViewRow("ISSHORTLIST"))
-                szInactive = IIf(IsDBNull(fViewRow("ISACTIVE")), "", fViewRow("ISACTIVE"))
+                szShortList = IIf(IsDBNull(fViewRow("ISSHORTLIST")), "", fViewRow("ISSHORTLIST"))
+                szActive = IIf(IsDBNull(fViewRow("ISACTIVE")), "", fViewRow("ISACTIVE"))
                 My.Computer.FileSystem.WriteAllText(filePath,
-                    szF_name & vbTab & szF_path & vbTab & szF_altname & vbTab & szSelected & vbTab & szInactive & vbCrLf,
+                    szF_name & vbTab & szF_path & vbTab & szF_altname & vbTab & szShortList & vbTab & szActive & vbCrLf,
                     True)
             Next
             MyMsgBox.Show("File creation complete", "Projection Helper Export", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -64,16 +64,16 @@ Public Class F_List_IO
     Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles BtnImport.Click
         Dim szParts(5) As String
         Dim szImportFile, szLine As String
-        Dim szFileComment, szOldSel, szNewSel, szOldInact, szNewInact, szSelComment, szInactComment As String
+        Dim szFileComment, szOldShL, szNewShL, szOldAct, szNewAct, szShlComment, szActComment As String
         Dim szOldAlt, szNewAlt, szAltComment As String
         Dim MatchRows() As DataRowView
-        Dim bSelIn, bXSelIn, bInactIn, bXInactIn, bRepAlt, bAddAlt As Boolean
-        Dim nTotal, nNotLocal, nNotRemote, nSelSet, nSelRem, nINactSet, nINactRem, nAlt As Integer
+        Dim bSelIn, bXSelIn, bActIn, bXActIn, bRepAlt, bAddAlt As Boolean
+        Dim nTotal, nNotLocal, nNotRemote, nSelSet, nSelRem, nActSet, nActRem, nAlt As Integer
 
         bXSelIn = ChkRemoveSelect.Checked
         bSelIn = ChkAddSelect.Checked
-        bXInactIn = ChkRemInactive.Checked
-        bInactIn = ChkAddInactive.Checked
+        bXActIn = ChkRemActive.Checked
+        bActIn = ChkAddActive.Checked
         bRepAlt = ChkReplaceAlt.Checked
         bAddAlt = ChkAddAlt.Checked
 
@@ -95,7 +95,7 @@ Public Class F_List_IO
             Exit Sub
         Else
             'MyMsgBox.Show(filesView.Count, "")
-            filesView.Sort = "f_name"
+            filesView.Sort = "f_name,f_path"
         End If
 
         Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(szImportFile)
@@ -107,12 +107,12 @@ Public Class F_List_IO
             If szParts(0) = "F_name" Then Continue Do
 
             nTotal += 1
-            MatchRows = filesView.FindRows(szParts(0))
+            MatchRows = filesView.FindRows({szParts(0), szParts(1)})
 
             szFileComment = ""
             szAltComment = ""
-            szSelComment = ""
-            szInactComment = ""
+            szShlComment = ""
+            szActComment = ""
 
             If MatchRows.Length = 0 Then
                 'this file is not included in local database
@@ -120,12 +120,12 @@ Public Class F_List_IO
                 szFileComment = "Not found in local database"
                 szOldAlt = ""
                 szNewAlt = ""
-                szOldSel = ""
-                szNewSel = ""
-                szOldInact = ""
-                szNewInact = ""
-                ResultAdd(T_Results, 0, szParts(0), szParts(1), szFileComment, szOldAlt, szNewAlt, szAltComment, szOldSel, szNewSel,
-                              szSelComment, szOldInact, szNewInact, szInactComment)
+                szOldShL = ""
+                szNewShL = ""
+                szOldAct = ""
+                szNewAct = ""
+                ResultAdd(T_Results, 0, szParts(0), szParts(1), szFileComment, szOldAlt, szNewAlt, szAltComment, szOldShL, szNewShL,
+                              szShlComment, szOldAct, szNewAct, szActComment)
             Else
                 For Each MatchRow In MatchRows
                     MatchRow.BeginEdit()
@@ -146,61 +146,61 @@ Public Class F_List_IO
                         ElseIf bAddAlt Then
                             If szOldAlt = "" Then
                                 MatchRow(3) = szNewAlt
-                                szSelComment = "New alternative inserted"
+                                szShlComment = "New alternative inserted"
                                 nAlt += 1
                             ElseIf szNewAlt.IndexOf(MatchRow(3)) > 0 Then
                                 MatchRow(3) = szNewAlt
-                                szSelComment = "Existing text included in import - replaced"
+                                szShlComment = "Existing text included in import - replaced"
                                 nAlt += 1
                             ElseIf MatchRow(3).IndexOf(szNewAlt) > 0 Then
-                                szSelComment = "Imported text already included - no change"
+                                szShlComment = "Imported text already included - no change"
                             Else
                                 MatchRow(3) = MatchRow(3) & "; " & szNewAlt
-                                szSelComment = "Alternative text extended"
+                                szShlComment = "Alternative text extended"
                                 nAlt += 1
                             End If
                         End If
                     End If
 
-                    ' Selected
-                    szOldSel = IIf(IsDBNull(MatchRow(4)), "", MatchRow(4))
-                    szNewSel = szParts(3)
-                    If szOldSel = szNewSel Then
-                        szSelComment = "No change"
-                        szNewSel = ""
+                    ' Short List
+                    szOldShL = IIf(IsDBNull(MatchRow(4)), "", MatchRow(4))
+                    szNewShL = szParts(3)
+                    If szOldShL = szNewShL Then
+                        szShlComment = "No change"
+                        szNewShL = ""
                     Else
-                        If szOldSel = "Y" And bXSelIn = True Then
-                            szSelComment = "Selection removed"
+                        If szOldShL = "Y" And bXSelIn = True Then
+                            szShlComment = "Selection removed"
                             MatchRow(4) = ""
                             nSelRem += 1
                         ElseIf szParts(3) = "Y" And bSelIn = True Then
-                            szSelComment = "Selection added"
+                            szShlComment = "Selection added"
                             MatchRow(4) = "Y"
                             nSelSet += 1
                         End If
                     End If
 
-                    'Inactive
-                    szOldInact = IIf(IsDBNull(MatchRow(8)), "", MatchRow(8))
-                    szNewInact = szParts(4)
-                    If szOldInact = szNewInact Then
-                        szInactComment = "No change"
-                        szNewInact = ""
+                    ' Active
+                    szOldAct = IIf(IsDBNull(MatchRow(8)), "", MatchRow(8))
+                    szNewAct = szParts(4)
+                    If szOldAct = szNewAct Then
+                        szActComment = "No change"
+                        szNewAct = ""
                     Else
-                        If szOldInact = "Y" And bXInactIn = True Then
-                            szInactComment = "Inactive removed"
+                        If szOldAct = "Y" And bXActIn = True Then
+                            szActComment = "Active removed"
                             MatchRow(8) = ""
-                            nINactRem += 1
-                        ElseIf szParts(4) = "Y" And bInactIn = True Then
-                            szInactComment = "Inactive added"
+                            nActRem += 1
+                        ElseIf szParts(4) = "Y" And bActIn = True Then
+                            szActComment = "Active added"
                             MatchRow(8) = "Y"
-                            nINactSet += 1
+                            nActSet += 1
                         End If
                     End If
 
                     MatchRow.EndEdit()
                     ResultAdd(T_Results, MatchRow(0), MatchRow(1), MatchRow(2), szFileComment, szOldAlt, szNewAlt, szAltComment,
-                              szOldSel, szNewSel, szSelComment, szOldInact, szNewInact, szInactComment)
+                              szOldShL, szNewShL, szShlComment, szOldAct, szNewAct, szActComment)
                     T_filesTable.Update(MatchRow)
                 Next
             End If
@@ -227,10 +227,10 @@ Public Class F_List_IO
                    vbCrLf & "Not found in local table: " & nNotLocal &
                    vbCrLf & "In local table, but not in import: " & nNotRemote &
                    vbCrLf & "Alternative text altered: " & nAlt &
-                   vbCrLf & "Selection set on: " & nSelSet &
-                   vbCrLf & "Selection turned off: " & nSelRem &
-                   vbCrLf & "Marked Inactive: " & nINactSet &
-                   vbCrLf & "Inactive status cleared: " & nINactRem &
+                   vbCrLf & "Sort List set on: " & nSelSet &
+                   vbCrLf & "Short List set off: " & nSelRem &
+                   vbCrLf & "Marked Active: " & nActSet &
+                   vbCrLf & "Active status cleared: " & nActRem &
                    vbCrLf & vbCrLf & "Would you like to save these results?"
         result = myMsgBox.Show(szMessage, "Import", MessageBoxButtons.YesNo, MessageBoxIcon.Information)
         If result = DialogResult.Yes Then
@@ -251,10 +251,9 @@ Public Class F_List_IO
         myTable.Columns.Add("old_sel", Type.GetType("System.String"))
         myTable.Columns.Add("new_sel", Type.GetType("System.String"))
         myTable.Columns.Add("sel_comment", Type.GetType("System.String"))
-        myTable.Columns.Add("old_inact", Type.GetType("System.String"))
-        myTable.Columns.Add("new_inact", Type.GetType("System.String"))
-        myTable.Columns.Add("inact_comment", Type.GetType("System.String"))
-        'myTable.Columns.Add("new_sel", Type.GetType("System.String"))
+        myTable.Columns.Add("old_act", Type.GetType("System.String"))
+        myTable.Columns.Add("new_act", Type.GetType("System.String"))
+        myTable.Columns.Add("act_comment", Type.GetType("System.String"))
 
         CreateTable = myTable
     End Function
@@ -284,9 +283,9 @@ Public Class F_List_IO
         workRow("old_sel") = s7
         workRow("new_sel") = s8
         workRow("sel_comment") = s9
-        workRow("old_inact") = s10
-        workRow("new_inact") = s11
-        workRow("inact_comment") = s12
+        workRow("old_act") = s10
+        workRow("new_act") = s11
+        workRow("act_comment") = s12
         myTable.Rows.Add(workRow)
         myTable.AcceptChanges()
     End Sub
@@ -302,15 +301,15 @@ Public Class F_List_IO
     Private Sub SaveImportResults(ByRef myTable As DataTable)
         Dim iRandom As New Random
         Dim filePath As String = ""
-        Dim fileName As String = "PPLinkImport" & iRandom.Next & ".txt"
+        Dim fileName As String = "ProjHelpImport" & iRandom.Next & ".txt"
 
         Try
             filePath = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, fileName)
             My.Computer.FileSystem.WriteAllText(filePath,
                 "File_no" & vbTab & "F_name" & vbTab & "F_path" & vbTab & "File_comment" & vbTab &
                 "F_oldalt" & vbTab & "F_newalt" & vbTab & "Alt_comment" & vbTab &
-                "Old_sel" & vbTab & "New_sel" & vbTab & "Sel_comment" & vbTab &
-                "Old_inact" & vbTab & "New_inact" & vbTab & "Inact_comment" & vbTab & vbCrLf,
+                "Old_shl" & vbTab & "New_shl" & vbTab & "Shl_comment" & vbTab &
+                "Old_act" & vbTab & "New_act" & vbTab & "Act_comment" & vbTab & vbCrLf,
                 False)
         Catch fileException As Exception
             MyMsgBox.Show("Failed to create file " & filePath, "Projection Helper Import Results Save",
@@ -326,7 +325,7 @@ Public Class F_List_IO
                 myRow("file_no") & vbTab & myRow("f_name") & vbTab & myRow("f_path") & vbTab & myRow("file_comment") & vbTab &
                 myRow("f_oldalt") & vbTab & myRow("f_newalt") & vbTab & myRow("alt_comment") & vbTab &
                 myRow("old_sel") & vbTab & myRow("new_sel") & vbTab & myRow("sel_comment") & vbTab &
-                myRow("old_inact") & vbTab & myRow("new_inact") & vbTab & myRow("inact_comment") & vbTab & vbCrLf,
+                myRow("old_act") & vbTab & myRow("new_act") & vbTab & myRow("act_comment") & vbTab & vbCrLf,
                 True)
         Next
         MyMsgBox.Show("File creation complete", "Projection Helper Import Results Save", MessageBoxButtons.OK, MessageBoxIcon.Information)

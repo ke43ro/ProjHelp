@@ -30,8 +30,8 @@ Partial Class F_FillTables
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.BtnLoadTable = New System.Windows.Forms.Button()
         Me.BtnEmpty = New System.Windows.Forms.Button()
-        Me.T_filesDataGridView = New System.Windows.Forms.DataGridView()
-        CType(Me.T_filesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
+        'Me.TFilesDataGridView = New System.Windows.Forms.DataGridView()
+        'CType(Me.TFilesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'BtnClose
@@ -101,14 +101,16 @@ Partial Class F_FillTables
         Me.ToolTip1.SetToolTip(Me.BtnEmpty, "Delete all entries from the Files table to start again.")
         Me.BtnEmpty.UseVisualStyleBackColor = True
         '
-        'T_filesDataGridView
+        'TFilesDataGridView
         '
-        Me.T_filesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.T_filesDataGridView.Location = New System.Drawing.Point(98, 410)
-        Me.T_filesDataGridView.Margin = New System.Windows.Forms.Padding(4)
-        Me.T_filesDataGridView.Name = "T_filesDataGridView"
-        Me.T_filesDataGridView.Size = New System.Drawing.Size(450, 202)
-        Me.T_filesDataGridView.TabIndex = 6
+        'Me.TFilesDataGridView.AllowUserToAddRows = False
+        'Me.TFilesDataGridView.AllowUserToDeleteRows = False
+        'Me.TFilesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        'Me.TFilesDataGridView.Location = New System.Drawing.Point(50, 408)
+        'Me.TFilesDataGridView.Name = "TFilesDataGridView"
+        'Me.TFilesDataGridView.ReadOnly = True
+        'Me.TFilesDataGridView.Size = New System.Drawing.Size(555, 216)
+        'Me.TFilesDataGridView.TabIndex = 8
         '
         'F_FillTables
         '
@@ -116,8 +118,8 @@ Partial Class F_FillTables
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 18.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(660, 636)
+        'Me.Controls.Add(Me.TFilesDataGridView)
         Me.Controls.Add(Me.BtnEmpty)
-        Me.Controls.Add(Me.T_filesDataGridView)
         Me.Controls.Add(Me.BtnLoadTable)
         Me.Controls.Add(Me.BtnClose)
         Me.Controls.Add(Me.txtResults)
@@ -131,7 +133,7 @@ Partial Class F_FillTables
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Recreate Song List"
-        CType(Me.T_filesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
+        'CType(Me.TFilesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -142,9 +144,6 @@ Partial Class F_FillTables
     Friend WithEvents txtFolder As TextBox
     Friend WithEvents txtResults As TextBox
     Friend WithEvents BtnLoadTable As Button
-    'Friend WithEvents T_filesTable As ProHelpDataSetTables.T_filesTable
-    'Friend WithEvents TableManager As ProHelpDataSetTables.TableManager
-    Friend WithEvents T_filesDataGridView As DataGridView
     Friend WithEvents DataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
     Friend WithEvents DataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
     Friend WithEvents DataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
@@ -155,4 +154,5 @@ Partial Class F_FillTables
     Friend WithEvents DataGridViewTextBoxColumn8 As DataGridViewTextBoxColumn
     Friend WithEvents DataGridViewTextBoxColumn9 As DataGridViewTextBoxColumn
     Friend WithEvents BtnEmpty As Button
+    'Friend WithEvents TFilesDataGridView As DataGridView
 End Class

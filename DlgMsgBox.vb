@@ -1,6 +1,10 @@
 ﻿Imports System.Windows.Forms
 
 Partial Class DlgMsgBox
+    Public Sub New()
+        MyBase.New()
+        InitializeComponent()
+    End Sub
 
     Private Sub OK_Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OK_Button.Click
         DialogResult = System.Windows.Forms.DialogResult.OK
@@ -8,8 +12,8 @@ Partial Class DlgMsgBox
     End Sub
 
     Private Sub Cancel_Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Cancel_Button.Click
-        Me.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Close()
+        DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Close()
     End Sub
 
     Public Overloads Function Show(Message As String, Title As String, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As MessageBoxIcon = MessageBoxIcon.Information) As DialogResult
@@ -38,9 +42,6 @@ Partial Class DlgMsgBox
 
     Public Overloads Function Show(myPrompt As String, myTitle As String) As DialogResult
         Dim Response As DialogResult
-        'Dim myDialog = New DlgMsgBox
-        'myDialog.TextBox1.Text = myPrompt
-        'myDialog.Text = "Projection Helper: " + myTitle
         TextBox1.Text = myPrompt
         Text = "Projection Helper: " + myTitle
         Response = ShowDialog()
@@ -49,14 +50,14 @@ Partial Class DlgMsgBox
 
     Public Overloads Function Show(myPrompt As String) As DialogResult
         Dim Response As DialogResult
-        'Dim myDialog = New DlgMsgBox
+
+        Me.SuspendLayout()
         IconPictureBox.Image = SystemIcons.Information.ToBitmap
-        'myDialog.TextBox1.Text = myPrompt
-        'myDialog.Text = "Projection Helper: Debug"
         TextBox1.Text = myPrompt
         Text = "Projection Helper: Debug"
         OK_Button.Visible = True
         Cancel_Button.Visible = False
+        Me.ResumeLayout(False)
         Response = ShowDialog()
         Return Response
     End Function

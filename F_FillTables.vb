@@ -1,7 +1,5 @@
 ﻿Imports System.Data.SQLite
-'Imports System.IO
-'Imports System.Net.WebRequestMethods
-'Imports Microsoft.Office.Core
+Imports System.Runtime.InteropServices
 
 Partial Class F_FillTables
     Private nMatched As Integer, nMissing As Integer
@@ -12,6 +10,14 @@ Partial Class F_FillTables
     Private ReadOnly isDebug As Boolean = My.Settings.Debug
     Private T_filesTable As FilesTable
     Private ReadOnly myMsgBox As New DlgMsgBox
+    Private WithEvents TfilesDataGridView As MyDataGridView
+    'Friend WithEvents FilenoDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    'Friend WithEvents FnameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    'Friend WithEvents FpathDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    'Friend WithEvents FaltnameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    'Friend WithEvents InactiveDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    'Friend WithEvents SsearchDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+
 
     Friend Sub LoadFolder(szFolderIn As String, pkleaForm As Boolean)
         pkleaFormat = pkleaForm
@@ -27,10 +33,11 @@ Partial Class F_FillTables
         End If
 
         T_filesTable = New FilesTable(connection, InclInActive:=True)
-        T_filesDataGridView.DataSource = T_filesTable
-        T_filesTable.SetDGProperties(T_filesDataGridView)
+        Create_TfilesDataGridView()
+        TfilesDataGridView.DataSource = T_filesTable
+        T_filesTable.SetDGProperties(TfilesDataGridView)
         iFilesStart = T_filesTable.Count()
-        If iFilesStart > 0 Then txtResults.Text = "There are already " & iFilesStart & " records in the table"
+        If iFilesStart > 0 Then txtResults.Text = "There are " & iFilesStart & " records in the table"
 
     End Sub
 
@@ -42,6 +49,25 @@ Partial Class F_FillTables
         End If
     End Sub
 
+    Private Sub Create_TfilesDataGridView()
+        SuspendLayout()
+        TfilesDataGridView = New MyDataGridView With {
+            .ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+            .Location = New System.Drawing.Point(18, 408),
+            .Margin = New System.Windows.Forms.Padding(4),
+            .Name = "TfilesDataGridView",
+            .Size = New System.Drawing.Size(611, 208),
+            .ScrollBars = System.Windows.Forms.ScrollBars.Both,
+            .TabIndex = 6
+        }
+        ToolTip1.SetToolTip(TfilesDataGridView, "The PPT Name is the actual file name of the song on the hard disk." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "The Other Nam" &
+        "e is an alternative title of the song or other search data.")
+        Controls.Add(TfilesDataGridView)
+        CType(Me.TfilesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
+        PerformLayout()
+    End Sub
+
     Private Sub BtnLoadTable_Click(sender As Object, e As EventArgs) Handles BtnLoadTable.Click
         Dim Result As DialogResult, myFiles As DataTable, myPPTs As GetFiles
 
@@ -51,7 +77,14 @@ Partial Class F_FillTables
             Exit Sub
         End If
 
-        If T_filesDataGridView.Rows.Count > 0 Then
+        If TfilesDataGridView Is Nothing OrElse TfilesDataGridView.IsDisposed Then
+            Create_TfilesDataGridView()
+        End If
+        T_filesTable.LoadAll(InclInActive:=True)
+        TfilesDataGridView.DataSource = T_filesTable
+        TfilesDataGridView.Visible = False
+
+        If T_filesTable.Count > 0 Then
             Result = myMsgBox.Show("There are already records in the Files Table." & vbCrLf &
                 "This feature is only intended for use on first setting up Projection Helper." & vbCrLf &
                 "There is an update feature under the Advanced Options." & vbCrLf & vbCrLf &
@@ -61,19 +94,19 @@ Partial Class F_FillTables
         End If
 
         Cursor = Cursors.WaitCursor
+        Application.DoEvents()
         BtnClose.Enabled = False
+        BtnEmpty.Enabled = False
+        BtnLoadTable.Enabled = False
 
         CheckFiles()
 
         If pkleaFormat Then
             txtResults.Text = txtResults.Text & vbCrLf & "Loading from Parklea-type MASTERS folder"
             txtResults.Text = txtResults.Text & vbCrLf & "Searching for alpha folders in: " & szFolder
-            'Dim allDirs As List(Of String) = GetFoldersPklea(szFolder)
-            'GetFilesPklea(allDirs)       ' modifies base table
         Else
             txtResults.Text = txtResults.Text & vbCrLf & "Loading from Hierarchical-type folder"
             txtResults.Text = txtResults.Text & vbCrLf & "Searching for folders in: " & szFolder
-            '            GetFilesHier(szFolder)       ' modifies base table
         End If
 
         ' get all PowerPoint files in the specified folder
@@ -98,21 +131,34 @@ Partial Class F_FillTables
 
         iFilesEnd = iNew + iAlready
         T_filesTable.LoadAll(InclInActive:=True)
-        T_filesDataGridView.Update()
+        TfilesDataGridView.Update()
         txtResults.Text = txtResults.Text & vbCrLf & "Found " & iNew & " new files; " & iAlready & " already listed"
 
-        T_filesDataGridView.Update()
-
         If isDebug Then myMsgBox.Show("After getting files, records: adapter=" & T_filesTable.Count &
-                                   "; view=" & T_filesDataGridView.Rows.Count)
+                                   "; view=" & TfilesDataGridView.Rows.Count)
         txtResults.Text = txtResults.Text & vbCrLf & (iFilesEnd - iFilesStart) &
             " file records loaded"
+        TfilesDataGridView.Visible = True
+
         Cursor = Cursors.Default
         BtnClose.Enabled = True
+        BtnEmpty.Enabled = True
+        BtnLoadTable.Enabled = True
     End Sub
 
     Private Sub BtnEmpty_Click(sender As Object, e As EventArgs) Handles BtnEmpty.Click
-        Dim myRow As DataRow, myCount As Integer = T_filesTable.Count
+        Dim myRow As DataRow, myCount As Integer
+        T_filesTable.LoadAll(InclInActive:=True)
+        myCount = T_filesTable.Count
+
+        If TfilesDataGridView Is Nothing OrElse TfilesDataGridView.IsDisposed Then
+            Create_TfilesDataGridView()
+        End If
+        TfilesDataGridView.DataSource = T_filesTable
+        TfilesDataGridView.Visible = False
+        'TfilesDataGridView.Update()
+        T_filesTable.SetDGProperties(TfilesDataGridView)
+
         Dim msgResult As DialogResult _
             = myMsgBox.Show("This will attempt to delete all records from the T_FILES table." & vbCrLf &
                               "The process will fail and do nothing if any play lists have been saved." & vbCrLf & vbCrLf &
@@ -121,6 +167,10 @@ Partial Class F_FillTables
         If msgResult = DialogResult.No Then Exit Sub
 
         Cursor = Cursors.WaitCursor
+        Application.DoEvents()
+        BtnClose.Enabled = False
+        BtnEmpty.Enabled = False
+        BtnLoadTable.Enabled = False
 
         txtResults.Text = txtResults.Text & vbCrLf & "Emptying Lyrics Table..."
         If myCount <> 0 Then
@@ -133,17 +183,45 @@ Partial Class F_FillTables
             txtResults.Text = txtResults.Text & vbCrLf & "Files record is empty.  Skip this action"
         End If
 
-        T_filesTable.LoadAll(InclInActive:=True)
-        T_filesDataGridView.Update()
+        ' Reload the data
+        T_filesTable.LoadEvery()
 
-        If isDebug Then myMsgBox.Show("After emptying, records: adapter=" & T_filesTable.Count &
-                                   "; view=" & T_filesDataGridView.Rows.Count)
+        '' Remove the old DataGridView from the form
+        'Controls.Remove(TfilesDataGridView)
+        'TfilesDataGridView.Dispose()
+
+        '' Create a new DataGridView instance
+        'TFilesDataGridView = New MyDataGridView()
+
+        '' Add the new DataGridView to the form
+        'Me.Controls.Add(TFilesDataGridView)
+        '' Rebind the data source
+
+        TfilesDataGridView.DataSource = T_filesTable
+
+        ' Set properties and re-apply your column settings
+        T_filesTable.SetDGProperties(TFilesDataGridView)
+        TfilesDataGridView.Update()
+        TfilesDataGridView.Visible = True
+
+        If isDebug Then
+            Dim nrowsView As Integer = TfilesDataGridView.RowCount
+            Dim nrowsTable As Integer = T_filesTable.Count
+
+            myMsgBox.Show("After checking files, records: adapter=" & nrowsTable & "; view=" & nrowsView)
+        End If
+
         txtResults.Text = txtResults.Text & vbCrLf & "Completed emptying the table"
-        Cursor = Cursors.Default
+
         iFilesStart = 0
         iFilesEnd = 0
         nMatched = 0
         nMissing = 0
+
+        Cursor = Cursors.Default
+        BtnClose.Enabled = True
+        BtnEmpty.Enabled = True
+        BtnLoadTable.Enabled = True
     End Sub
 
     Private Sub BtnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnClose.Click
@@ -191,7 +269,7 @@ Partial Class F_FillTables
             NextFile = Dir(szPath & "\*.*", 0)
             While NextFile <> "" ' j <4
                 Select Case NextFile.Substring(NextFile.Length - 4, 4).ToLower()
-                    Case ".ppt", "pptx"
+                    Case ".ppt", "pptx", "pptm"
                         LookUp = searchView.Find(NextFile)
                         If LookUp < 0 Then
                             nNew += 1
@@ -206,55 +284,15 @@ Partial Class F_FillTables
 
         iFilesEnd = nNew + nAlready
         T_filesTable.LoadAll(InclInActive:=True)
-        T_filesDataGridView.Update()
+        TfilesDataGridView.Update()
         txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
     End Sub
-
-    'Private Sub GetFilesHier(rootFolder As String)
-    '    ' This subroutine is used to get the files from the specified folders
-    '    'MessageBox.Show("This feature is not yet implemented for Hierarchical folders", "Not Implemented", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    '    'Exit Sub
-
-    '    'Dim szPath As String
-    '    Dim searchView As New DataView(T_filesTable)
-    '    Dim nNew As Integer = 0, nAlready As Integer = 0
-    '    txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files into my List..."
-    '    searchView.Sort = "f_name"
-
-    '    GetItems(rootFolder, searchView, nNew, nAlready)
-
-    '    iFilesEnd = nNew + nAlready
-    '    T_filesTable.LoadAll(InclInActive:=True)
-    '    T_filesDataGridView.Update()
-    '    txtResults.Text = txtResults.Text & vbCrLf & "Found " & nNew & " new files; " & nAlready & " already listed"
-    'End Sub
-
-    'Private Sub GetItems(myFolder As String, searchView As DataView, ByRef iNew As Integer, ByRef iAlready As Integer)
-    '    Dim myFile As String, LookUp As Integer
-    '    For Each szPath In FileIO.FileSystem.GetFiles(myFolder, FileIO.SearchOption.SearchAllSubDirectories, "*.*")
-    '        If Directory.Exists(szPath) Then
-    '            GetItems(szPath, searchView, iNew, iAlready)
-    '        ElseIf File.Exists(szPath) Then
-    '            myFile = FileIO.FileSystem.GetName(szPath)
-    '            Select Case myFile.Substring(myFile.Length - 4, 4).ToLower()
-    '                Case ".ppt", "pptx", "pptm"
-    '                    LookUp = searchView.Find(myFile)
-    '                    If LookUp < 0 Then
-    '                        iNew += 1
-    '                        T_filesTable.Insert(myFile, szPath, True)
-    '                    Else
-    '                        iAlready += 1
-    '                    End If
-    '            End Select
-    '        End If
-    '    Next szPath
-    'End Sub
 
     Private Sub CheckFiles()
         Dim FullName As String
         Dim fViewRow As DataRowView
-
         Dim filesView As New DataView(T_filesTable)
+        TfilesDataGridView.Visible = False
 
         txtResults.Text = txtResults.Text & vbCrLf & "Checking my File List against the disk contents..."
         If filesView.Count() = 0 Then
@@ -295,8 +333,15 @@ Partial Class F_FillTables
         End If
 
         T_filesTable.LoadAll(InclInActive:=True)
-        If isDebug Then myMsgBox.Show("After checking files, records: adapter=" & T_filesTable.Count &
-                                   "; view=" & T_filesDataGridView.RowCount)
+        If isDebug Then
+            Dim nrowsView As Integer = TfilesDataGridView.RowCount
+            Dim nrowsTable As Integer = T_filesTable.Count
+            myMsgBox.Show("After checking files, records: adapter=" & nrowsTable &
+                                       "; view=" & nrowsView)
+        End If
+        TfilesDataGridView.DataSource = T_filesTable
+        TfilesDataGridView.Visible = True
+        Application.DoEvents()
 
     End Sub
 
@@ -316,4 +361,20 @@ Partial Class F_FillTables
         End Using
     End Sub
 
+End Class
+
+<ComVisible(True)>
+<Guid("D1B6A1A2-1234-4B56-ABCD-1234567890AB")>
+Public Class MyDataGridView
+    Inherits DataGridView
+
+    Public Sub New()
+        Me.AccessibleName = ""
+        Me.AccessibleRole = AccessibleRole.None
+        Me.AccessibleDescription = ""
+    End Sub
+
+    Protected Overrides Function CreateAccessibilityInstance() As AccessibleObject
+        Return MyBase.CreateAccessibilityInstance()
+    End Function
 End Class

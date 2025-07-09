@@ -38,6 +38,7 @@ Partial Class F_Main
         Me.BtnLoadList = New System.Windows.Forms.Button()
         Me.ChkShortList = New System.Windows.Forms.CheckBox()
         Me.T_filesDataGridView = New System.Windows.Forms.DataGridView()
+        Me.ChkPause = New System.Windows.Forms.CheckBox()
         Me.LBInstant = New System.Windows.Forms.ListBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -45,8 +46,8 @@ Partial Class F_Main
         Me.TxtListNo = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.LblVersion = New System.Windows.Forms.Label()
-        Me.ChkPause = New System.Windows.Forms.CheckBox()
         CType(Me.T_filesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
@@ -96,7 +97,7 @@ Partial Class F_Main
         Me.BtnPlay.Name = "BtnPlay"
         Me.BtnPlay.Size = New System.Drawing.Size(100, 37)
         Me.BtnPlay.TabIndex = 5
-        Me.BtnPlay.Text = "Play all"
+        Me.BtnPlay.Text = "&Play all"
         Me.ToolTip1.SetToolTip(Me.BtnPlay, "Start PowerPoint and show the list of songs")
         Me.BtnPlay.UseVisualStyleBackColor = True
         '
@@ -125,7 +126,7 @@ Partial Class F_Main
         'BtnAdvanced
         '
         Me.BtnAdvanced.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnAdvanced.Location = New System.Drawing.Point(12, 574)
+        Me.BtnAdvanced.Location = New System.Drawing.Point(12, 601)
         Me.BtnAdvanced.Name = "BtnAdvanced"
         Me.BtnAdvanced.Size = New System.Drawing.Size(100, 30)
         Me.BtnAdvanced.TabIndex = 12
@@ -136,18 +137,18 @@ Partial Class F_Main
         'BtnHelp
         '
         Me.BtnHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnHelp.Location = New System.Drawing.Point(394, 574)
+        Me.BtnHelp.Location = New System.Drawing.Point(394, 601)
         Me.BtnHelp.Name = "BtnHelp"
         Me.BtnHelp.Size = New System.Drawing.Size(100, 30)
         Me.BtnHelp.TabIndex = 14
         Me.BtnHelp.Text = "Help"
-        Me.ToolTip1.SetToolTip(Me.BtnHelp, "Show a Screen with instructions on how to use PPLink")
+        Me.ToolTip1.SetToolTip(Me.BtnHelp, "Show a Screen with instructions on how to use ProjHelp")
         Me.BtnHelp.UseVisualStyleBackColor = True
         '
         'BtnSetup
         '
         Me.BtnSetup.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSetup.Location = New System.Drawing.Point(776, 574)
+        Me.BtnSetup.Location = New System.Drawing.Point(776, 601)
         Me.BtnSetup.Name = "BtnSetup"
         Me.BtnSetup.Size = New System.Drawing.Size(100, 30)
         Me.BtnSetup.TabIndex = 9
@@ -185,7 +186,7 @@ Partial Class F_Main
         Me.T_filesDataGridView.AllowUserToAddRows = False
         Me.T_filesDataGridView.AllowUserToDeleteRows = False
         Me.T_filesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.T_filesDataGridView.Location = New System.Drawing.Point(14, 380)
+        Me.T_filesDataGridView.Location = New System.Drawing.Point(14, 406)
         Me.T_filesDataGridView.MultiSelect = False
         Me.T_filesDataGridView.Name = "T_filesDataGridView"
         Me.T_filesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -193,6 +194,18 @@ Partial Class F_Main
         Me.T_filesDataGridView.TabIndex = 2
         Me.ToolTip1.SetToolTip(Me.T_filesDataGridView, "The PPT Name is the actual file name of the song on the hard disk." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "The Other Nam" &
         "e is an alternative title of the song or other search data.")
+        '
+        'ChkPause
+        '
+        Me.ChkPause.AutoSize = True
+        Me.ChkPause.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ChkPause.Location = New System.Drawing.Point(674, 182)
+        Me.ChkPause.Name = "ChkPause"
+        Me.ChkPause.Size = New System.Drawing.Size(201, 22)
+        Me.ChkPause.TabIndex = 27
+        Me.ChkPause.Text = "Pause at the end of videos"
+        Me.ToolTip1.SetToolTip(Me.ChkPause, resources.GetString("ChkPause.ToolTip"))
+        Me.ChkPause.UseVisualStyleBackColor = True
         '
         'LBInstant
         '
@@ -209,7 +222,7 @@ Partial Class F_Main
         Me.Label3.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.Location = New System.Drawing.Point(15, 132)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(539, 124)
+        Me.Label3.Size = New System.Drawing.Size(539, 149)
         Me.Label3.TabIndex = 19
         Me.Label3.Text = resources.GetString("Label3.Text")
         '
@@ -260,6 +273,7 @@ Partial Class F_Main
         'Panel1
         '
         Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Controls.Add(Me.TxtSearch)
         Me.Panel1.Controls.Add(Me.BtnAdd)
         Me.Panel1.Controls.Add(Me.Label2)
@@ -267,10 +281,19 @@ Partial Class F_Main
         Me.Panel1.Controls.Add(Me.Label4)
         Me.Panel1.Controls.Add(Me.ChkShortList)
         Me.Panel1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Panel1.Location = New System.Drawing.Point(5, 258)
+        Me.Panel1.Location = New System.Drawing.Point(6, 284)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(879, 311)
         Me.Panel1.TabIndex = 26
+        '
+        'TextBox1
+        '
+        Me.TextBox1.Enabled = False
+        Me.TextBox1.Location = New System.Drawing.Point(635, 50)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(100, 24)
+        Me.TextBox1.TabIndex = 25
+        Me.TextBox1.Visible = False
         '
         'LblVersion
         '
@@ -282,23 +305,11 @@ Partial Class F_Main
         Me.LblVersion.Text = "Version"
         Me.LblVersion.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
-        'ChkPause
-        '
-        Me.ChkPause.AutoSize = True
-        Me.ChkPause.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChkPause.Location = New System.Drawing.Point(674, 182)
-        Me.ChkPause.Name = "ChkPause"
-        Me.ChkPause.Size = New System.Drawing.Size(201, 22)
-        Me.ChkPause.TabIndex = 27
-        Me.ChkPause.Text = "Pause at the end of videos"
-        Me.ToolTip1.SetToolTip(Me.ChkPause, resources.GetString("ChkPause.ToolTip"))
-        Me.ChkPause.UseVisualStyleBackColor = True
-        '
         'F_Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(892, 612)
+        Me.ClientSize = New System.Drawing.Size(892, 640)
         Me.Controls.Add(Me.ChkPause)
         Me.Controls.Add(Me.TxtListNo)
         Me.Controls.Add(Me.Label5)
@@ -340,7 +351,6 @@ Partial Class F_Main
     Friend WithEvents Label3 As Label
     Friend WithEvents Label4 As Label
     Friend WithEvents ChkShortList As System.Windows.Forms.CheckBox
-    '    Friend WithEvents ProHelpDataSet As ProHelpDataSet
     Friend WithEvents FilenoDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents FnameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents FpathDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
@@ -354,4 +364,5 @@ Partial Class F_Main
     Friend WithEvents T_filesDataGridView As DataGridView
     Friend WithEvents LblVersion As Label
     Friend WithEvents ChkPause As System.Windows.Forms.CheckBox
+    Friend WithEvents TextBox1 As TextBox
 End Class

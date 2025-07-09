@@ -42,9 +42,6 @@
                 TxtAdvice.Text = szHier
             End If
 
-            ' done after Test
-            'My.Settings.MasterFolder = TxtFolder.Text
-            'My.Settings.Save()
         Else
             myMsgBox.Show("This feature can only be run if a folder is specified",
                             "Testing the setup", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -92,6 +89,7 @@
         My.Settings.Save()
         CheckBox.Checked = True
         Cursor = Cursors.Default
+
     End Sub
 
 

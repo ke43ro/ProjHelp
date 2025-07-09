@@ -3,6 +3,7 @@
 Public Class F_UpdateFileList
     'Private connection As SqlConnection
     Private iNoFile As Integer, isVerbose As Boolean = False
+    Private isDebug As Boolean = F_Main.IsDebug
     Private bFoundActive, bNewSelect As Boolean
     Const iInactive As Integer = 1
     Const iDeleteAll As Integer = 2
@@ -12,7 +13,6 @@ Public Class F_UpdateFileList
     Private Tx_playlist2FileTable As Tx_playlistTable
     'Private isShort As Boolean = False
     Private ReadOnly myMsgBox As New DlgMsgBox
-
 
     Private Sub F_UpdateFileList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim connection As SQLiteConnection = F_Main.ProjHelpData.GetConnection()
@@ -29,7 +29,6 @@ Public Class F_UpdateFileList
         RBtnMakeSelect.Checked = True
     End Sub
 
-
     Private Sub BtnBrowse_Click(sender As Object, e As EventArgs) Handles BtnBrowse.Click
         FolderBrowserDialog1.SelectedPath = TxtFolder.Text
         If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
@@ -44,7 +43,6 @@ Public Class F_UpdateFileList
         End If
 
     End Sub
-
 
     Private Sub BtnUpdate_Click(sender As Object, e As EventArgs) Handles BtnUpdate.Click
 
@@ -156,16 +154,19 @@ Public Class F_UpdateFileList
 
     Private Function RemoveDupes() As String
         Dim fViewRow As DataRowView
-        Dim filesView As New DataView(T_filesTable)
+        T_filesTable.LoadAll()
+        Dim filesView As New DataView(T_filesTable) With {.Sort = "file_no"}
         Dim MatchRows As DataView
         Dim nChanges, nTotal, iFileNo, iDupFileNo As Integer
         Dim matchN, matchP As String
-        Dim szF_name, szF_path, szSearch As String  ', szFAltName, szSelected, szLast_Action, szIsActive
+        'Dim szSearch, szF_name, szF_path, szFAltName, szSelected, szLast_Action, szIsActive As String
         Dim dtLast_Dt, dtCreate_Dt As DateTime
-        Dim bChanged As Boolean
+        'Dim bChanged As Boolean
 
-        'RemoveDupes = ""
-        'txtResults.Text = txtResults.Text & vbCrLf & "Emptying Songs Table..."
+        If isDebug Then
+            myMsgBox.Show("Removing duplicates from the Files table", "Update File List", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
+
         nTotal = filesView.Count
         If nTotal = 0 Then
             RemoveDupes = "0" & vbTab & "There were no records in the Files table"
@@ -174,13 +175,19 @@ Public Class F_UpdateFileList
         Else
             nChanges = 0
             For Each fViewRow In filesView
-                bChanged = False
+                If fViewRow.Row.RowState = DataRowState.Detached Then
+                    ' duplicate already deleted
+                    Continue For
+                End If
+                'bChanged = False
                 iFileNo = fViewRow.Row.Item("file_no")
                 matchN = fViewRow.Row.Item("f_name")
                 matchN = matchN.Replace("'", "''")
                 matchP = fViewRow.Row.Item("f_path")
+                'If isDebug Then myMsgBox.Show("About to open MatchRows")
                 MatchRows = New DataView(T_filesTable, "f_name='" & matchN & "' AND f_path='" & matchP & "'",
-                                         "f_name, f_path", DataViewRowState.CurrentRows)
+                                             "f_name, f_path", DataViewRowState.CurrentRows)
+                'If isDebug Then myMsgBox.Show("MatchRows opened")
                 For Each myRow In MatchRows
                     iDupFileNo = myRow.row.item("file_no")
                     If iDupFileNo <> iFileNo Then
@@ -190,21 +197,15 @@ Public Class F_UpdateFileList
                         End If
                         vPlaylists.Dispose()
 
-                        szF_name = myRow.row.item("f_name")
-                        szF_path = myRow.row.item("f_path")
-                        'szFAltName = myRow.row.item("f_altname")
-                        'szSelected = myRow.row.item("selected")
-                        'szLast_Action = myRow.row.item("last_action")
-                        'szIsActive = myRow.row.item("isActive")
-                        'dtLast_Dt = myRow.row.item("last_dt")
-                        'dtCreate_Dt = myRow.row.item("create_dt")
-                        szSearch = myRow.row.Item("s_search")
+                        dtLast_Dt = myRow.row.item("last_dt")
+                        dtCreate_Dt = myRow.row.item("create_dt")
                         Try
                             'T_filesTable.Delete(iDupFileNo, szF_name, szF_path, szFAltName, szSelected,
                             '   dtCreate_Dt, dtLast_Dt, szLast_Action, szIsActive, szSearch)
                             T_filesTable.Delete(iDupFileNo)
-                            bChanged = True
+                            'bChanged = True
                             nChanges += 1
+                            filesView.Delete(filesView.Find(iDupFileNo))
                         Catch ex As Exception
                             myMsgBox.Show("Error deleting duplicate file record " & iDupFileNo & " (duplicate of " & iFileNo & ")" & vbCrLf &
                                 "LD [" & dtLast_Dt & "]; " & "CD [" & dtCreate_Dt & "]" & vbCrLf &
@@ -215,9 +216,9 @@ Public Class F_UpdateFileList
                         End Try
                     End If
                 Next
-                If bChanged Then
-                    T_filesTable.AcceptChanges()
-                End If
+                'If bChanged Then
+                '    T_filesTable.AcceptChanges()
+                'End If
                 MatchRows.Dispose()
             Next
         End If
@@ -225,81 +226,6 @@ Public Class F_UpdateFileList
         filesView.Dispose()
         RemoveDupes = "1" & vbTab & "There were " & nTotal & " records in the Files table.  " & nChanges & " duplicates were deleted"
     End Function
-
-
-    'Private Function CreateTableDF() As DataTable
-    '    Dim myTable As New DataTable("T_DiskFiles")
-    '    Dim keys(2) As DataColumn
-
-    '    myTable.Columns.Add("f_path", Type.GetType("System.String"))
-    '    myTable.Columns.Add("f_name", Type.GetType("System.String"))
-    '    myTable.Columns.Add("fullpath", Type.GetType("System.String"))
-    '    myTable.Columns.Add("status", Type.GetType("System.Int32"))
-    '    ' status: 0=file found; 1=file matched db
-    '    keys(0) = myTable.Columns(0)
-    '    keys(1) = myTable.Columns(1)
-    '    myTable.PrimaryKey = keys
-
-    '    CreateTableDF = myTable
-    'End Function
-
-
-    Private Sub ResultAddDF(myTable As DataTable, s1 As String, s2 As String, i1 As Integer)
-        Dim workRow As DataRow = myTable.NewRow()
-        workRow("f_path") = s1
-        workRow("f_name") = s2
-        workRow("fullpath") = s1 & "\" & s2
-        workRow("status") = i1
-        myTable.Rows.Add(workRow)
-        myTable.AcceptChanges()
-    End Sub
-
-
-    'Private Function GetFiles(T_diskfiles As DataTable) As Integer
-    '    Dim szPath As String, NextFile As String, myPPTs As GetFiles
-    '    Dim AllDirs(30) As String, NextDir As String, i As Integer
-
-    '    txtResults.Text = txtResults.Text & vbCrLf & "Collecting New files..."
-    '    Dim szFolder As String = TxtFolder.Text
-
-    '     get all PowerPoint files in the specified folder
-
-    '    GetFiles = 0
-    '    i = 0
-    '    NextDir = Dir(szFolder & "\*", 16)
-
-    '    While NextDir <> ""
-    '        Select Case NextDir
-    '            Case ".", ".."
-    '            Case Else
-    '                If Len(NextDir) = 1 Then
-    '                    AllDirs(i) = szFolder & "\" & NextDir
-    '                    i += 1
-    '                End If
-    '        End Select
-    '        NextDir = Dir()
-    '    End While
-
-    '    If i = 0 Then
-    '        myMsgBox.Show("There are no alpha folders here:" & vbCrLf &
-    '            szFolder & vbCrLf & "Please locate a Parklea songs MASTERS folder",
-    '            "Update File List", MessageBoxButtons.OK, MessageBoxIcon.Stop)
-    '        Exit Function
-    '    End If
-
-    '    For Each szPath In AllDirs
-    '        NextFile = Dir(szPath & "\*.*", 0)
-    '        While NextFile <> "" ' j <4
-    '            Select Case NextFile.Substring(NextFile.Length - 4, 4)
-    '                Case ".ppt", "pptx", ".PPT", "PPTX"
-    '                    ResultAddDF(T_diskfiles, szPath, NextFile, 0)
-    '            End Select
-    '            NextFile = Dir()
-    '        End While
-    '    Next szPath
-
-    '    GetFiles = T_diskfiles.Rows.Count
-    'End Function
 
     Private Function CheckExistingFiles(T_diskfiles As DataTable) As String
         Dim DBFiles As New DataView(T_filesTable, "", "f_path, f_name", DataViewRowState.CurrentRows)
@@ -315,15 +241,15 @@ Public Class F_UpdateFileList
         nMakeActive = 0
         nIgnoreInactive = 0
         nNoChange = 0
-        'CheckExistingFiles = "0" & vbTab & "Nothing done yet"
-        DiskFiles.Sort = "FilePath"
+
+        DiskFiles.Sort = "FilePath,FileName"
 
         For Each DBFile As DataRowView In DBFiles
             szPath = DBFile.Row.Item("f_path")
             szFName = DBFile.Row.Item("f_name")
             szFullPath = szPath & "\" & szFName
             iFileNo = DBFile.Row.Item("file_no")
-            iRow = DiskFiles.Find(szFullPath)
+            iRow = DiskFiles.Find({szPath, szFName})
             If iRow < 0 Then
                 'file is no longer on the disk - is it included in a playlist?
                 Dim vPlaylists As New DataView(Tx_playlist2FileTable, "file_no=" & iFileNo, "file_no", DataViewRowState.CurrentRows)
@@ -354,9 +280,7 @@ Public Class F_UpdateFileList
                             Tx_playlist2FileTable.AcceptChanges()
                             Try
                                 T_filesTable.Delete(iFileNo)
-                                'T_filesTable.Delete(iFileNo, szFName, szPath, DBFile.Row.Item("f_altname"), DBFile.Row.Item("selected"),
-                                '    DBFile.Row.Item("create_dt"), DBFile.Row.Item("last_dt"), DBFile.Row.Item("last_action"), DBFile.Row.Item("isActive"),
-                                '        DBFile.Row.Item("s_search"))
+
                             Catch ex As Exception
                                 myMsgBox.Show("Error deleting file record " & iFileNo & vbCrLf &
                                         "LD [" & DBFile.Row.Item("last_dt") & "]; " & "CD [" & DBFile.Row.Item("create_dt") & "]" & vbCrLf &
@@ -377,9 +301,6 @@ Public Class F_UpdateFileList
                             Tx_playlist2FileTable.AcceptChanges()
                             Try
                                 T_filesTable.Delete(iFileNo)
-                                'T_filesTable.Delete(iFileNo, szFName, szPath, DBFile.Row.Item("f_altname"), DBFile.Row.Item("selected"),
-                                '    DBFile.Row.Item("create_dt"), DBFile.Row.Item("last_dt"), DBFile.Row.Item("last_action"), DBFile.Row.Item("isActive"),
-                                '        DBFile.Row.Item("s_search"))
 
                             Catch ex As Exception
                                 myMsgBox.Show("Error deleting file record " & iFileNo & vbCrLf &
@@ -399,9 +320,7 @@ Public Class F_UpdateFileList
                 Else
                     Try
                         T_filesTable.Delete(iFileNo)
-                        'T_filesTable.Delete(iFileNo, szFName, szPath, DBFile.Row.Item("f_altname"), DBFile.Row.Item("selected"),
-                        '        DBFile.Row.Item("create_dt"), DBFile.Row.Item("last_dt"),
-                        '        DBFile.Row.Item("last_action"), DBFile.Row.Item("isActive"), DBFile.Row.Item("s_search"))
+
                     Catch ex As Exception
                         myMsgBox.Show("Error deleting file record " & iFileNo & vbCrLf &
                                         "LD [" & DBFile.Row.Item("last_dt") & "]; " & "CD [" & DBFile.Row.Item("create_dt") & "]" & vbCrLf &
@@ -439,6 +358,7 @@ Public Class F_UpdateFileList
             End If
             Tx_playlist2FileTable.AcceptChanges()
         Next
+
         Dim iTot As Integer = nInactive + nDeleteAll + nDeleteThis + nDeleteRecord + nMakeActive + nIgnoreInactive + nNoChange
         CheckExistingFiles = iTot & vbTab & nInactive & "->INACTIVE; " & nDeleteAll & "->DELETEALL; " & nDeleteThis & "->DELETETHIS;" &
             nDeleteRecord & "->DELETEREC; " & nMakeActive & "->ACTIVE; " & nIgnoreInactive & "->INACTIVE IGNORED" & nNoChange & "->NOCHANGE"

@@ -15,7 +15,13 @@
       <Value Profile="(Default)">%DOCUMENTS%\Kairos\Parklea\Lyrics\MASTERS</Value>
     </Setting>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DatabaseLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DataFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\keithr.computing\ProjHelp</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -35,15 +35,16 @@ Public Class GetFiles
     End Function
 
     Private Sub GetFilesHier(myFolder As String)
-        Dim myFile As String
+        Dim myFile, myPath As String
         For Each szPath In FileIO.FileSystem.GetFiles(myFolder, FileIO.SearchOption.SearchAllSubDirectories, "*.*")
             If Directory.Exists(szPath) Then
                 GetFilesHier(szPath)
             ElseIf File.Exists(szPath) Then
                 myFile = FileIO.FileSystem.GetName(szPath)
+                myPath = FileIO.FileSystem.GetParentPath(szPath)
                 Select Case myFile.Substring(myFile.Length - 4, 4).ToLower()
                     Case ".ppt", "pptx", "pptm"
-                        AddRow(fileTable, myFile, szPath)
+                        AddRow(fileTable, myFile, myPath)
                 End Select
             End If
         Next szPath
@@ -74,13 +75,14 @@ Public Class GetFiles
 
     Private Sub GetFilesPklea(myFolders As List(Of String))
         ' This subroutine is used to get the files from Parklea format folders
-        Dim szPath As String, myFile As String
+        Dim szPath, myFile, myPath As String
 
         For Each szPath In myFolders
             For Each myFile In FileIO.FileSystem.GetFiles(szPath, FileIO.SearchOption.SearchAllSubDirectories, "*.*")
                 Select Case myFile.Substring(myFile.Length - 4, 4).ToLower()
-                    Case ".ppt", "pptx"
-                        AddRow(fileTable, myFile, szPath)
+                    Case ".ppt", "pptx", ".pptm"
+                        myPath = FileIO.FileSystem.GetParentPath(myFile)
+                        AddRow(fileTable, myFile, myPath)
                 End Select
             Next myFile
         Next szPath

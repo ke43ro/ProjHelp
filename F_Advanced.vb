@@ -34,8 +34,8 @@ Public Class F_Advanced
 
     Private Sub ChkDebug_CheckedChanged(sender As Object, e As EventArgs) Handles ChkDebug.CheckedChanged
         If isLoading Then Exit Sub
-        F_Main.isDebug = ChkDebug.Checked
-        My.Settings.Debug = F_Main.isDebug
+        F_Main.IsDebug = ChkDebug.Checked
+        My.Settings.Debug = F_Main.IsDebug
         My.Settings.Save()
 
     End Sub

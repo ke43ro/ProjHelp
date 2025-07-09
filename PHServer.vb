@@ -1,6 +1,7 @@
 ﻿
 Imports System.Data.SQLite
 Imports System.Text.RegularExpressions
+Imports ProjHelp.My
 
 Public Class PHServer
     ReadOnly SqlCreate As String =
@@ -51,13 +52,29 @@ CREATE TRIGGER [fku_tx_playlist_song_list_no_t_playlists_list_no] BEFORE Update 
 COMMIT;
 "
 
-    ReadOnly location As String = Application.StartupPath
+    Private location As String = My.Settings.DatabaseLocation
     ReadOnly fileName As String = "ProjHelpData.db"
-    ReadOnly fullPath As String = System.IO.Path.Combine(location, fileName)
+    Private fullPath As String
     Public connectionString As String = String.Format("Data Source = {0}", fullPath)
     Private sqlConn As New SQLiteConnection
 
     Public Function ConnectDatabase() As SQLiteConnection
+        If location = "" Then
+            Dim DataFolder As String = My.Settings.DataFolder
+            location = FileIO.SpecialDirectories.ProgramFiles.Replace(" Files", "Data") & DataFolder
+            If Not IO.Directory.Exists(location) Then
+                Try
+                    IO.Directory.CreateDirectory(location)
+                Catch ex As Exception
+                    MessageBox.Show("Cannot create directory: " & location & vbCrLf & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return Nothing
+                End Try
+            End If
+            My.Settings.DatabaseLocation = location
+            My.Settings.Save()
+        End If
+        fullPath = System.IO.Path.Combine(location, fileName)
+        connectionString = String.Format("Data Source={0}", fullPath)
         sqlConn.ConnectionString = connectionString
 
         If Not System.IO.File.Exists(fullPath) Then
@@ -129,6 +146,9 @@ Public Class FilesTable
         LoadTable(szSearch)
     End Sub
 
+    Public Sub LoadEvery()
+        LoadTable("SELECT * FROM t_files")
+    End Sub
 
     Private Sub LoadTable(szSrch As String)
         Dim command As New SQLiteCommand With {
@@ -152,8 +172,7 @@ Public Class FilesTable
         Dim insertQuery As String = "INSERT into [t_files] " &
             "([f_name], [f_path], [isShortList], [create_dt], [last_dt], [last_action], [isActive], [s_search]) " &
             "VALUES (@fname, @fpath, @isshort, @create_dt, @create_dt, @tag, 'Y', @search)"
-        Dim szSearch As String = fileName.ToLower.Replace(".pptx", "")
-        szSearch = szSearch.Replace(".ppt", "")
+        Dim szSearch As String = fileName.ToLower().Substring(0, fileName.LastIndexOf("."))
 
         Dim cmd As New SQLiteCommand(insertQuery, myConn)
         cmd.Parameters.AddWithValue("@fname", fileName)
@@ -229,13 +248,26 @@ Public Class FilesTable
         End If
 
         ' Update the old row with the new values
-        Dim szSearch As String
-        If IsDBNull(newRow("s_search")) Then
-            szSearch = newRow("f_name").ToString().ToLower().Replace(".pptx", "").Replace(".ppt", "") &
-                        "; " & newRow("f_altname").ToString().ToLower()
-            szSearch = StripPunc(szSearch)
+        Dim szSearchNew, szSearchOld, szSearchMod As String
+
+        If IsDBNull(oldRow("s_search")) Then
+            szSearchOld = ""
         Else
-            szSearch = newRow("s_search")
+            szSearchOld = oldRow("s_search").ToString()
+        End If
+        If IsDBNull(newRow("s_search")) Then
+            szSearchMod = ""
+        Else
+            szSearchMod = newRow("s_search").ToString()
+        End If
+
+        If szSearchMod = szSearchOld Then
+            szSearchNew = newRow("f_name").ToString().ToLower()
+            szSearchNew = szSearchNew.Substring(0, szSearchNew.LastIndexOf(".")) &
+                              "; " & newRow("f_altname").ToString().ToLower()
+            szSearchNew = StripPunc(szSearchNew)
+        Else
+            szSearchNew = newRow("s_search")
         End If
 
         Dim updateQuery As String = "UPDATE t_files Set " &
@@ -247,7 +279,7 @@ Public Class FilesTable
         cmd.Parameters.AddWithValue("@isshort", newRow("isShortList"))
         cmd.Parameters.AddWithValue("@isActive", newRow("isActive"))
         cmd.Parameters.AddWithValue("@last_dt", Now())
-        cmd.Parameters.AddWithValue("@s_search", szSearch)
+        cmd.Parameters.AddWithValue("@s_search", szSearchNew)
         cmd.Parameters.AddWithValue("@file_no", newRow("file_no"))
         Dim result As Integer = cmd.ExecuteNonQuery()
 
@@ -301,14 +333,14 @@ Public Class FilesTable
         dg.Columns("f_altname").ToolTipText = "This is an alternative name for the song. " &
             "It can be used to search for the file in the system."
         dg.Columns("isShortList").Width = 35
-        dg.Columns("isShortList").HeaderText = "ShortL"
+        dg.Columns("isShortList").HeaderText = "S"
         dg.Columns("isShortList").ToolTipText = "If Y, this is a file that " &
             "is on the Short List."
         dg.Columns("create_dt").Visible = False
         dg.Columns("last_dt").Visible = False
         dg.Columns("last_action").Visible = False
         dg.Columns("isActive").Width = 35
-        dg.Columns("isActive").HeaderText = "Active"
+        dg.Columns("isActive").HeaderText = "A"
         dg.Columns("isActive").ToolTipText = "If Y, this file is active and will appear in lists. " &
             "Otherwise it will not be seen by the operator."
         dg.Columns("s_search").Width = 200
@@ -473,10 +505,10 @@ Public Class PlaylistsTable
         dg.Columns("list_no").Width = 30
         dg.Columns("list_no").HeaderText = "List No"
         dg.Columns("list_no").ToolTipText = "This unique identifier for the playlist is set ny the database."
-        dg.Columns("play_dt").Width = 150
+        dg.Columns("play_dt").Width = 200
         dg.Columns("play_dt").HeaderText = "Show Time"
         dg.Columns("play_dt").ToolTipText = "This is the date and time you expect to use this list"
-        dg.Columns("l_name").Width = 250
+        dg.Columns("l_name").Width = 350
         dg.Columns("l_name").HeaderText = "Playlist Name"
         dg.Columns("l_name").ToolTipText = "This name is used to identify the list you want to use"
         dg.DefaultCellStyle.Font = New Font("Microsoft Sans Serif", 10.5, FontStyle.Regular)

@@ -104,7 +104,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
         Public Property Debug() As Boolean
             Get
                 Return CType(Me("Debug"),Boolean)
@@ -112,6 +112,27 @@ Namespace My
             Set
                 Me("Debug") = value
             End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property DatabaseLocation() As String
+            Get
+                Return CType(Me("DatabaseLocation"),String)
+            End Get
+            Set
+                Me("DatabaseLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("\keithr.computing\ProjHelp")>  _
+        Public ReadOnly Property DataFolder() As String
+            Get
+                Return CType(Me("DataFolder"),String)
+            End Get
         End Property
     End Class
 End Namespace

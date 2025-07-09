@@ -33,6 +33,7 @@ Public Class F_CompareWithMaster
 
 
     Private Sub BtnCompareFile_Click(sender As Object, e As EventArgs) Handles BtnCompareFile.Click
+        ' this is browsing for the compare file
         OpenFileDialog1.CheckFileExists = True
         If OpenFileDialog1.ShowDialog = DialogResult.OK Then
             TxtCompareFile.Text = OpenFileDialog1.FileName
@@ -185,8 +186,8 @@ Public Class F_CompareWithMaster
             'myKeyParser.GetKeyValues(szLine, vbTab, szParts)
             If szParts(0) = "F_name" Or szParts(0) = "" Then Continue Do
             myRow = myTable.NewRow()
-            myRow("f_path") = szFolder + "\" + szParts(0)
-            myRow("f_name") = szParts(1)
+            myRow("f_path") = szParts(1)
+            myRow("f_name") = szParts(0)
             myRow("status") = 0
             myTable.Rows.Add(myRow)
             myTable.AcceptChanges()

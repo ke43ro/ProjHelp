@@ -31,8 +31,8 @@ Partial Class F_List_IO
         Me.ChkReplaceAlt = New System.Windows.Forms.CheckBox()
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.ChkAddInactive = New System.Windows.Forms.CheckBox()
-        Me.ChkRemInactive = New System.Windows.Forms.CheckBox()
+        Me.ChkAddActive = New System.Windows.Forms.CheckBox()
+        Me.ChkRemActive = New System.Windows.Forms.CheckBox()
         Me.ChkAddSelect = New System.Windows.Forms.CheckBox()
         Me.ChkRemoveSelect = New System.Windows.Forms.CheckBox()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
@@ -44,9 +44,10 @@ Partial Class F_List_IO
         '
         'BtnExport
         '
-        Me.BtnExport.Location = New System.Drawing.Point(114, 19)
+        Me.BtnExport.Location = New System.Drawing.Point(171, 26)
+        Me.BtnExport.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.BtnExport.Name = "BtnExport"
-        Me.BtnExport.Size = New System.Drawing.Size(161, 33)
+        Me.BtnExport.Size = New System.Drawing.Size(242, 46)
         Me.BtnExport.TabIndex = 0
         Me.BtnExport.Text = "Export File List"
         Me.ToolTip1.SetToolTip(Me.BtnExport, resources.GetString("BtnExport.ToolTip"))
@@ -59,13 +60,15 @@ Partial Class F_List_IO
         Me.GroupBox1.Controls.Add(Me.ChkReplaceAlt)
         Me.GroupBox1.Controls.Add(Me.BtnImport)
         Me.GroupBox1.Controls.Add(Me.TextBox1)
-        Me.GroupBox1.Controls.Add(Me.ChkAddInactive)
-        Me.GroupBox1.Controls.Add(Me.ChkRemInactive)
+        Me.GroupBox1.Controls.Add(Me.ChkAddActive)
+        Me.GroupBox1.Controls.Add(Me.ChkRemActive)
         Me.GroupBox1.Controls.Add(Me.ChkAddSelect)
         Me.GroupBox1.Controls.Add(Me.ChkRemoveSelect)
-        Me.GroupBox1.Location = New System.Drawing.Point(13, 64)
+        Me.GroupBox1.Location = New System.Drawing.Point(20, 89)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(359, 261)
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox1.Size = New System.Drawing.Size(538, 361)
         Me.GroupBox1.TabIndex = 1
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Import File List"
@@ -75,11 +78,12 @@ Partial Class F_List_IO
         Me.TextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox2.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TextBox2.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TextBox2.Location = New System.Drawing.Point(8, 188)
+        Me.TextBox2.Location = New System.Drawing.Point(12, 260)
+        Me.TextBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.TextBox2.Multiline = True
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.ReadOnly = True
-        Me.TextBox2.Size = New System.Drawing.Size(342, 21)
+        Me.TextBox2.Size = New System.Drawing.Size(513, 29)
         Me.TextBox2.TabIndex = 9
         Me.TextBox2.TabStop = False
         Me.TextBox2.Text = "* If neither is selected, alternative text in the import will be ignored"
@@ -87,9 +91,10 @@ Partial Class F_List_IO
         'ChkAddAlt
         '
         Me.ChkAddAlt.AutoSize = True
-        Me.ChkAddAlt.Location = New System.Drawing.Point(12, 168)
+        Me.ChkAddAlt.Location = New System.Drawing.Point(18, 233)
+        Me.ChkAddAlt.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.ChkAddAlt.Name = "ChkAddAlt"
-        Me.ChkAddAlt.Size = New System.Drawing.Size(242, 17)
+        Me.ChkAddAlt.Size = New System.Drawing.Size(323, 22)
         Me.ChkAddAlt.TabIndex = 8
         Me.ChkAddAlt.Text = "Extend Alternative text with that in the import *"
         Me.ChkAddAlt.UseVisualStyleBackColor = True
@@ -97,18 +102,20 @@ Partial Class F_List_IO
         'ChkReplaceAlt
         '
         Me.ChkReplaceAlt.AutoSize = True
-        Me.ChkReplaceAlt.Location = New System.Drawing.Point(12, 144)
+        Me.ChkReplaceAlt.Location = New System.Drawing.Point(18, 199)
+        Me.ChkReplaceAlt.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.ChkReplaceAlt.Name = "ChkReplaceAlt"
-        Me.ChkReplaceAlt.Size = New System.Drawing.Size(249, 17)
+        Me.ChkReplaceAlt.Size = New System.Drawing.Size(332, 22)
         Me.ChkReplaceAlt.TabIndex = 7
         Me.ChkReplaceAlt.Text = "Replace Alternative text with that in the import *"
         Me.ChkReplaceAlt.UseVisualStyleBackColor = True
         '
         'BtnImport
         '
-        Me.BtnImport.Location = New System.Drawing.Point(101, 214)
+        Me.BtnImport.Location = New System.Drawing.Point(152, 296)
+        Me.BtnImport.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.BtnImport.Name = "BtnImport"
-        Me.BtnImport.Size = New System.Drawing.Size(161, 33)
+        Me.BtnImport.Size = New System.Drawing.Size(242, 46)
         Me.BtnImport.TabIndex = 6
         Me.BtnImport.Text = "Import"
         Me.ToolTip1.SetToolTip(Me.BtnImport, "Read a file that has been exported from another installation.  Make changes to yo" &
@@ -120,54 +127,59 @@ Partial Class F_List_IO
         Me.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TextBox1.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TextBox1.Location = New System.Drawing.Point(12, 112)
+        Me.TextBox1.Location = New System.Drawing.Point(18, 155)
+        Me.TextBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.ReadOnly = True
-        Me.TextBox1.Size = New System.Drawing.Size(342, 35)
+        Me.TextBox1.Size = New System.Drawing.Size(513, 48)
         Me.TextBox1.TabIndex = 5
         Me.TextBox1.TabStop = False
         Me.TextBox1.Text = "* Import does not check whether or not the associated files exist on disk." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "  Use" &
     " Advanced > Update File List to verify file existence."
         '
-        'ChkAddInactive
+        'ChkAddActive
         '
-        Me.ChkAddInactive.AutoSize = True
-        Me.ChkAddInactive.Location = New System.Drawing.Point(12, 92)
-        Me.ChkAddInactive.Name = "ChkAddInactive"
-        Me.ChkAddInactive.Size = New System.Drawing.Size(240, 17)
-        Me.ChkAddInactive.TabIndex = 3
-        Me.ChkAddInactive.Text = "Set my Inactive flags if the Import is Inactive *"
-        Me.ChkAddInactive.UseVisualStyleBackColor = True
+        Me.ChkAddActive.AutoSize = True
+        Me.ChkAddActive.Location = New System.Drawing.Point(18, 127)
+        Me.ChkAddActive.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.ChkAddActive.Name = "ChkAddActive"
+        Me.ChkAddActive.Size = New System.Drawing.Size(300, 22)
+        Me.ChkAddActive.TabIndex = 3
+        Me.ChkAddActive.Text = "Set my Active flags if the Import is Active *"
+        Me.ChkAddActive.UseVisualStyleBackColor = True
         '
-        'ChkRemInactive
+        'ChkRemActive
         '
-        Me.ChkRemInactive.AutoSize = True
-        Me.ChkRemInactive.Location = New System.Drawing.Point(12, 68)
-        Me.ChkRemInactive.Name = "ChkRemInactive"
-        Me.ChkRemInactive.Size = New System.Drawing.Size(282, 17)
-        Me.ChkRemInactive.TabIndex = 2
-        Me.ChkRemInactive.Text = "Remove my Inactive flags if the Import is not Inactive *"
-        Me.ChkRemInactive.UseVisualStyleBackColor = True
+        Me.ChkRemActive.AutoSize = True
+        Me.ChkRemActive.Location = New System.Drawing.Point(18, 94)
+        Me.ChkRemActive.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.ChkRemActive.Name = "ChkRemActive"
+        Me.ChkRemActive.Size = New System.Drawing.Size(359, 22)
+        Me.ChkRemActive.TabIndex = 2
+        Me.ChkRemActive.Text = "Remove my Active flags if the Import is not Active *"
+        Me.ChkRemActive.UseVisualStyleBackColor = True
         '
         'ChkAddSelect
         '
         Me.ChkAddSelect.AutoSize = True
-        Me.ChkAddSelect.Location = New System.Drawing.Point(12, 44)
+        Me.ChkAddSelect.Location = New System.Drawing.Point(18, 61)
+        Me.ChkAddSelect.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.ChkAddSelect.Name = "ChkAddSelect"
-        Me.ChkAddSelect.Size = New System.Drawing.Size(223, 17)
+        Me.ChkAddSelect.Size = New System.Drawing.Size(335, 22)
         Me.ChkAddSelect.TabIndex = 1
-        Me.ChkAddSelect.Text = "Set my Selected flags if Import is Selected"
+        Me.ChkAddSelect.Text = "Set my Short List flags if Import is on Short List"
         Me.ChkAddSelect.UseVisualStyleBackColor = True
         '
         'ChkRemoveSelect
         '
         Me.ChkRemoveSelect.AutoSize = True
-        Me.ChkRemoveSelect.Location = New System.Drawing.Point(12, 20)
+        Me.ChkRemoveSelect.Location = New System.Drawing.Point(18, 28)
+        Me.ChkRemoveSelect.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.ChkRemoveSelect.Name = "ChkRemoveSelect"
-        Me.ChkRemoveSelect.Size = New System.Drawing.Size(283, 17)
+        Me.ChkRemoveSelect.Size = New System.Drawing.Size(413, 22)
         Me.ChkRemoveSelect.TabIndex = 0
-        Me.ChkRemoveSelect.Text = "Remove my Selected flags if the Import is not Selected"
+        Me.ChkRemoveSelect.Text = "Remove my Short List flags if the Import is not Short Listed"
         Me.ChkRemoveSelect.UseVisualStyleBackColor = True
         '
         'OpenFileDialog1
@@ -184,11 +196,13 @@ Partial Class F_List_IO
         '
         'F_List_IO
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 18.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(388, 336)
+        Me.ClientSize = New System.Drawing.Size(582, 465)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.BtnExport)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "F_List_IO"
         Me.Text = "Export or Import a List of Files"
         Me.GroupBox1.ResumeLayout(False)
@@ -206,8 +220,8 @@ Partial Class F_List_IO
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents BtnImport As Button
     Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents ChkAddInactive As CheckBox
-    Friend WithEvents ChkRemInactive As CheckBox
+    Friend WithEvents ChkAddActive As CheckBox
+    Friend WithEvents ChkRemActive As CheckBox
     Friend WithEvents ChkAddSelect As CheckBox
     Friend WithEvents ChkRemoveSelect As CheckBox
     Friend WithEvents OpenFileDialog1 As OpenFileDialog

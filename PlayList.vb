@@ -6,6 +6,7 @@ Public Class PlayList
     Private Declare Function SetForegroundWindow Lib "user32" (ByVal hWnd As IntPtr) As Integer
     Private ReadOnly myMsgBox As New DlgMsgBox
     Private PrefDisplay As Screen, vidPause As Boolean
+    Private ReadOnly isDebug As Boolean = My.Settings.Debug
 
     ' get the file extension
     Private Function GetExtn(Path) As String
@@ -18,7 +19,7 @@ Public Class PlayList
             Extn = Path.Substring(idx)
         End If
 
-        Return Extn
+        Return Extn.ToLower()
     End Function
 
     ' create a media object for the file
@@ -81,8 +82,6 @@ Public Class PlayList
     End Sub
 
     Public Sub Run(display As Screen, pause As Boolean, ByRef arPlayList As ListBox.ObjectCollection)
-        'Dim PPPres As Application  ' Microsoft.Office.Interop.PowerPoint.Application
-        'Dim SSWin As SlideShowWindow
         Dim szFileName, szFPath As String, i, iFileNo, iIndex As Integer
         Dim myParts As String()
         PrefDisplay = display
@@ -125,6 +124,9 @@ Public Class PlayList
                 End If
 
                 szFPath = szFPath & "\" & szFileName
+            End If
+            If isDebug Then
+                myMsgBox.Show("Running file " & szFPath, "Running a show", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
             If Dir(szFPath) = "" Then
                 myMsgBox.Show("Can't find show file " & szFileName & " on the disk", "Running a show",

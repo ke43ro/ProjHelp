@@ -1,0 +1,15 @@
+Firefox:
+[InternetShortcut]
+URL=https://kairos.org.au/
+IDList=
+HotKey=0
+IconFile=C:\Users\keith\AppData\Local\Mozilla\Firefox\Profiles\rxj02two.default-release\shortcutCache\gwOo745kE8kjOOPLXLnNUBKksHn7xOhPG8Jl+q_I0Ps=.ico
+IconIndex=0
+
+Chrome:
+[InternetShortcut]
+URL=https://kairos.org.au/
+
+Brave:
+[InternetShortcut]
+URL=https://kairos.org.au/

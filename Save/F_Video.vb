@@ -6,9 +6,6 @@ Public Class F_Video
     Private VideoMedia As Media, ScreenLocation As Rectangle, BPauseEach As Boolean = False
     Private ReadOnly myMsgBox As New DlgMsgBox
     Private _mp As MediaPlayer
-    Private seekPos As Double = 0.0
-    Private vidLength As Double
-    Private vidPos As Double
 
     Private Sub F_Video_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'myMsgBox.Show("On Load: Top: " & Top & "; Left: " & Left &
@@ -34,11 +31,6 @@ Public Class F_Video
             .Visible = True
             .Focus()
         End With
-        TxtCur.Text = "00:00:00"
-        BarSeek.Value = 0
-        vidLength = VideoMedia.Duration
-        TxtEnd.Text = VideoMedia.Duration.ToString("hh\:mm\:ss")
-        _mp.Volume = 100
 
         'myMsgBox.Show("about to play")
         _mp.Play(VideoMedia)
@@ -47,8 +39,6 @@ Public Class F_Video
         'myMsgBox.Show("set foreground")
         Dim unused = SetForegroundWindow(Handle)
         'myMsgBox.Show("end form load - Top: " & Top & "; Left: " & Left)
-        Timer1.Interval = 1000
-        Timer1.Start()
     End Sub
 
 
@@ -107,45 +97,6 @@ Public Class F_Video
         e.Handled = True
     End Sub
 
-    Private Sub BtnPause_Click(sender As Object, e As EventArgs) Handles BtnPause.Click
-        If _mp.IsPlaying Then
-            _mp.Pause()
-        Else
-            _mp.Play()
-        End If
-    End Sub
-
-    Private Sub BtnStop_Click(sender As Object, e As EventArgs) Handles BtnStop.Click
-        Timer1.Stop()
-        If _mp.State = VLCState.Ended Then
-            CloseForm()
-        Else
-            _mp.Stop()
-            Close()
-        End If
-    End Sub
-
-    Private Sub BarVol_Scroll(sender As Object, e As EventArgs) Handles BarVol.Scroll
-        _mp.Volume = BarVol.Value
-    End Sub
-
-    Private Sub BarSeek_Scroll(sender As Object, e As EventArgs) Handles BarSeek.Scroll
-        _mp.Position = BarSeek.Value / 1000.0F
-        seekPos = _mp.Position
-        vidPos = seekPos * vidLength
-        TxtCur.Text = TimeSpan.FromMilliseconds(vidPos).ToString("hh\:mm\:ss")
-    End Sub
-
-    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
-        If _mp IsNot Nothing AndAlso _mp.IsPlaying Then
-            Dim pos As Double = _mp.Position ' 0.0 to 1.0
-            BarSeek.Value = CInt(pos * 1000)
-            Dim curMs As Double = pos * vidLength
-            TxtCur.Text = TimeSpan.FromMilliseconds(curMs).ToString("hh\:mm\:ss")
-            TxtEnd.Text = TimeSpan.FromMilliseconds(vidLength).ToString("hh\:mm\:ss")
-            VideoView1.Focus()
-        End If
-    End Sub
 
     Private Sub VideoView1_KeyDown(sender As Object, e As KeyEventArgs) Handles VideoView1.KeyDown
         Select Case e.KeyCode
@@ -169,7 +120,6 @@ Public Class F_Video
 
 
     Private Sub MediaPlayer_EndReached(sender As Object, e As EventArgs)
-        Timer1.Stop()
         If Not BPauseEach Then CloseForm()
     End Sub
 End Class

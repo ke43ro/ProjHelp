@@ -100,7 +100,24 @@ COMMIT;
         Return sqlConn
     End Function
 
+    Public Sub EnsurePlaylistFilesView()
+        Dim conn As SQLiteConnection = GetConnection()
+        If conn.State <> ConnectionState.Open Then conn.Open()
 
+        Dim createViewSql As String =
+            "CREATE VIEW IF NOT EXISTS v_playlist_files AS " &
+            "SELECT tps.rec_no, tps.list_no, tps.seq_no, tps.file_no, tps.full_path, " &
+            "p.play_dt, p.l_name, " &
+            "f.f_name, f.f_path, f.f_altname, f.isShortList, f.isActive, " &
+            "CASE WHEN tps.file_no = -1 THEN tps.full_path ELSE (f.f_path || '\' || f.f_name) END AS resolved_full_path " &
+            "FROM tx_playlist_song tps " &
+            "JOIN t_playlists p ON p.list_no = tps.list_no " &
+            "LEFT JOIN t_files f ON f.file_no = tps.file_no;"
+
+        Using cmd As New SQLiteCommand(createViewSql, conn)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
 End Class
 
 Public Class FilesTable
@@ -121,8 +138,8 @@ Public Class FilesTable
 
     Public Sub LoadByPhrase(isShort As Boolean, phrase As String)
         Dim szSearch As String = IIf(isShort,
-                String.Format("SELECT * FROM t_files WHERE f_name like '%{0}%' AND isShortList = '{1}' AND File_no > 0 AND isActive = 'Y'", phrase, isShort),
-                String.Format("SELECT * FROM t_files WHERE f_name like '%{0}%' AND File_no > 0 AND isActive = 'Y'", phrase)
+                String.Format("SELECT * FROM t_files WHERE s_search like '%{0}%' AND isShortList = '{1}' AND File_no > 0 AND isActive = 'Y'", phrase, isShort),
+                String.Format("SELECT * FROM t_files WHERE s_search like '%{0}%' AND File_no > 0 AND isActive = 'Y'", phrase)
             )
 
         LoadTable(szSearch)
@@ -360,7 +377,7 @@ Public Class PlaylistsTable
     Public Sub New(conn As SQLiteConnection, Optional bFuture As Boolean = False)
         myConn = conn
         If bFuture Then
-            LoadFuture(DateTime.Now)
+            LoadFuture(DateTime.Now.Date)
         Else
             LoadAll()
         End If

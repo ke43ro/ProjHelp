@@ -1,4 +1,5 @@
-﻿Imports System.Deployment.Application
+﻿Imports System.Data.SQLite
+Imports System.Deployment.Application
 Imports LibVLCSharp.Shared
 
 
@@ -7,13 +8,15 @@ Partial Class F_Main
     Friend ProjHelpData As New PHServer
     Friend isDebug As Boolean = My.Settings.Debug
 
-    Private ReadOnly protoVersion As String = "2.1.0.35"
+    Private ReadOnly protoVersion As String = "2.1.0.39"
     Private ReadOnly PlayList As New PlayList
     Private ReadOnly myMsgBox As New DlgMsgBox
     Private isShort As Boolean = False
     Private myStatus As String = "Loading"
     Private T_filesTable As FilesTable
     Private PrefDisplay As Screen
+    Private playlistInterrupt As Boolean = False
+    Private connection As SQLiteConnection
 
     Public Sub New()
         InitializeComponent()
@@ -31,7 +34,9 @@ Partial Class F_Main
 
     ' *** Section Form Load, Updates, set up ***
     Private Sub F_Main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If ProjHelpData.ConnectDatabase() Is Nothing Then
+        connection = ProjHelpData.ConnectDatabase()
+        If connection Is Nothing Then
+            'If ProjHelpData.ConnectDatabase() Is Nothing Then
             myMsgBox.Show("Unable to connect to the database.",
                 "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -64,7 +69,7 @@ Partial Class F_Main
         isAutoShort = My.Settings.AutoShortList
 
         T_filesTable = New FilesTable(isShort, ProjHelpData.GetConnection)
-        T_filesDataGridView.DataSource = T_filesTable ' T_filesTable.GetDataByPhrase(TxtSearch.Text)
+        T_filesDataGridView.DataSource = T_filesTable
         T_filesTable.SetDGProperties(T_filesDataGridView)
         TxtSearch.Focus()
         myStatus = "Loaded"
@@ -373,6 +378,10 @@ Partial Class F_Main
         DoPlayList()
     End Sub
 
+    Private Sub BtnStop_Click(sender As Object, e As EventArgs) Handles BtnStop.Click
+        playlistInterrupt = True
+    End Sub
+
     Private Sub DoPlayList()
         If LBPlayList.Items.Count = 0 Then
             myMsgBox.Show("Please add some items to the list",
@@ -381,11 +390,23 @@ Partial Class F_Main
             Exit Sub
         End If
 
+        playlistInterrupt = False
         MyBase.WindowState = FormWindowState.Minimized
-        PlayList.Run(PrefDisplay, ChkPause.Checked, LBPlayList.Items)
-        MyBase.WindowState = FormWindowState.Normal
-        TxtSearch.Text = ""
-        TxtSearch.Focus()
+        'PlayList.Run(PrefDisplay, ChkPause.Checked, LBPlayList.Items)
+        'MyBase.WindowState = FormWindowState.Normal
+        'TxtSearch.Text = ""
+        'TxtSearch.Focus()
+
+        ' Run playlist in background
+        Task.Run(Sub()
+                     PlayList.Run(PrefDisplay, ChkPause.Checked, LBPlayList.Items, connection, AddressOf IsPlaylistInterrupted)
+                     ' Restore window state on UI thread after playlist ends
+                     Me.Invoke(Sub()
+                                   MyBase.WindowState = FormWindowState.Normal
+                                   TxtSearch.Text = ""
+                                   TxtSearch.Focus()
+                               End Sub)
+                 End Sub)
     End Sub
 
     Private Sub BtnSetup_Click(sender As Object, e As EventArgs) Handles BtnSetup.Click
@@ -439,7 +460,7 @@ Partial Class F_Main
         LBInstant.Items.Clear()
         LBInstant.Items.Add(iFile_no.ToString & vbTab & szFName & vbTab & szFullPath)
         MyBase.WindowState = FormWindowState.Minimized
-        PlayList.Run(PrefDisplay, ChkPause.Checked, LBInstant.Items)
+        PlayList.Run(PrefDisplay, ChkPause.Checked, LBInstant.Items, connection)
         MyBase.WindowState = FormWindowState.Normal
 
         TxtSearch.Text = ""
@@ -471,7 +492,7 @@ Partial Class F_Main
         MyBase.WindowState = FormWindowState.Minimized
         'MyMsgBox.Show("Playing " & szListItem, "Playing a file",
         '        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        PlayList.Run(PrefDisplay, ChkPause.Checked, LBInstant.Items)
+        PlayList.Run(PrefDisplay, ChkPause.Checked, LBInstant.Items, connection)
         MyBase.WindowState = FormWindowState.Normal
 
         TxtSearch.Text = ""
@@ -508,7 +529,7 @@ Partial Class F_Main
 
         'MessageBox.Show("ChkPath opened, found extn [" & Extn & "]", "ChkPath", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Select Case Extn
-            Case ".ppt", ".pptx", ".pptm", ".doc", ".docx", ".pdf"
+            Case ".ppt", ".pptx", ".pptm", ".doc", ".docx", ".pdf", ".url"
                 ' All good
                 'MessageBox.Show("Adding " & myPath, "ChkPath", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
@@ -674,50 +695,9 @@ Partial Class F_Main
 
 
     ' *** Section Play methods ***
-    'Private Sub PlayFile(myPath As String)
-    '    Dim PlayPowerPoint As VBPlayPowerPoint, PlayPDF As VBPlayPDF, PlayWord As VBPlayWord
-    '    Dim myForm As F_Video
-    '    Dim myMedia As Media
-    '    Dim myExtn = GetExtn(myPath)
-
-    '    Select Case myExtn
-    '        Case ".doc", ".docx"
-    '            PlayWord = New VBPlayWord
-    '            PlayWord.Run(myPath, PrefDisplay)
-    '            PlayWord = Nothing
-
-    '        Case ".ppt", ".pptx", "pptm"
-    '            PlayPowerPoint = New VBPlayPowerPoint
-    '            PlayPowerPoint.Run(myPath)
-    '            PlayPowerPoint = Nothing
-
-    '        Case ".pdf"
-    '            PlayPDF = New VBPlayPDF
-    '            PlayPDF.Run(myPath)
-    '            PlayPDF = Nothing
-
-    '        Case Else
-    '            myMedia = GetMedia(myPath)
-    '            If myMedia Is Nothing Then
-    '                myMsgBox.Show("Program Error - can't process " & myPath, "Displaying Media")
-    '            Else
-    '                myForm = New F_Video()
-    '                'szTemp = "PlayFile() Top: " + PrefDisplay.Bounds.Top.ToString + "; Left: " + PrefDisplay.Bounds.Left.ToString +
-    '                '    "; X: " & PrefDisplay.Bounds.X & "; Y: " & PrefDisplay.Bounds.Y &
-    '                '    "; Height: " & PrefDisplay.Bounds.Height.ToString + "; Width: " + PrefDisplay.Bounds.Width.ToString +
-    '                '    "; Location: " + PrefDisplay.Bounds.Location.ToString
-    '                'myMsgBox.Show(szTemp)
-    '                With myForm
-    '                    .LoadMedia(myMedia)
-    '                    .LoadBounds(PrefDisplay.Bounds)
-    '                    .LoadPause(ChkPause.Checked)
-    '                    .ShowDialog()
-    '                End With
-    '                myForm = Nothing
-    '            End If
-
-    '    End Select
-    'End Sub
+    Private Function IsPlaylistInterrupted() As Boolean
+        Return playlistInterrupt
+    End Function
 
     Private Function GetMedia(myPath As String) As Media
         Dim libVLC As New LibVLC()
@@ -795,6 +775,14 @@ End Class
 
 'Version number
 'Z.Y.X.W - Z.Y.X is {major version}.{minor version}.{build}; W is VS publish number.  Missing publish numbers were used in testing
+'2.1.0.41   Added feature to export all playlists to a tab delimited file
+'2.1.0.40   Added Stop to interrupt a playlist at the end of the current item
+'           Added ability to open a URL shortcut file  
+'2.1.0.39   Fixed bugs: Playlist was not being cleared before saving another list
+'               Future was not showing lists if we were late.  Now shows everying from 00:00 today
+'               Better arrangement of instructions on the video player form
+'2.1.0.38   Added on-screen controls to Video Player
+'2.1.0.37   Fixed bug in search: was testing filename, not search field
 '2.1.0.35   Added location of the database to the settings so that updates can find and preserve it.
 '           Debugging of drag and drop problems
 '2.1.0.18   Updated documentation

@@ -30,6 +30,7 @@ Partial Class F_Advanced
         Me.ChkAutoSelectList = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkDebug = New System.Windows.Forms.CheckBox()
+        Me.BtnPlayExp = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'BtnListIO
@@ -83,7 +84,7 @@ Partial Class F_Advanced
         '
         Me.ChkAutoSelectList.AutoSize = True
         Me.ChkAutoSelectList.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChkAutoSelectList.Location = New System.Drawing.Point(13, 224)
+        Me.ChkAutoSelectList.Location = New System.Drawing.Point(13, 266)
         Me.ChkAutoSelectList.Name = "ChkAutoSelectList"
         Me.ChkAutoSelectList.Size = New System.Drawing.Size(333, 22)
         Me.ChkAutoSelectList.TabIndex = 5
@@ -99,7 +100,7 @@ Partial Class F_Advanced
         '
         Me.ChkDebug.AutoSize = True
         Me.ChkDebug.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChkDebug.Location = New System.Drawing.Point(13, 248)
+        Me.ChkDebug.Location = New System.Drawing.Point(13, 290)
         Me.ChkDebug.Name = "ChkDebug"
         Me.ChkDebug.Size = New System.Drawing.Size(169, 22)
         Me.ChkDebug.TabIndex = 6
@@ -108,11 +109,24 @@ Partial Class F_Advanced
         "eration)")
         Me.ChkDebug.UseVisualStyleBackColor = True
         '
+        'BtnPlayExp
+        '
+        Me.BtnPlayExp.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnPlayExp.Location = New System.Drawing.Point(99, 223)
+        Me.BtnPlayExp.Name = "BtnPlayExp"
+        Me.BtnPlayExp.Size = New System.Drawing.Size(191, 33)
+        Me.BtnPlayExp.TabIndex = 7
+        Me.BtnPlayExp.Text = "Play Lists Export"
+        Me.ToolTip1.SetToolTip(Me.BtnPlayExp, "Exports a file that can be read on another installation to transfer your short li" &
+        "st" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "and alternative text or vice versa.")
+        Me.BtnPlayExp.UseVisualStyleBackColor = True
+        '
         'F_Advanced
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(388, 277)
+        Me.ClientSize = New System.Drawing.Size(388, 319)
+        Me.Controls.Add(Me.BtnPlayExp)
         Me.Controls.Add(Me.ChkDebug)
         Me.Controls.Add(Me.ChkAutoSelectList)
         Me.Controls.Add(Me.BtnCompare)
@@ -133,4 +147,5 @@ Partial Class F_Advanced
     Friend WithEvents ChkAutoSelectList As CheckBox
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents ChkDebug As CheckBox
+    Friend WithEvents BtnPlayExp As Button
 End Class

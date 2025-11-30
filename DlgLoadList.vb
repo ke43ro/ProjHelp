@@ -152,15 +152,15 @@ Public Class DlgLoadList
             If result = DialogResult.No Then Exit Sub
         End If
 
-        'Dim searchView As DataView = Tx_playlist2FileTable.DefaultView
-        'searchView.Sort = "list_no"
+        Dim searchView As DataView = Tx_playlist2FileTable.DefaultView
+        searchView.Sort = "list_no"
         'If searchView.FindRows(iListNo).Count > 0 Then
 
-        '    For Each deleteRow In searchView.FindRows(iListNo)
-        '        Tx_playlist2FileTable.Delete(deleteRow("REC_NO"), deleteRow("LIST_NO"), deleteRow("SEQ_NO"), deleteRow("FILE_NO"))
-        '    Next
+        For Each deleteRow In searchView.FindRows(iListNo)
+            Tx_playlist2FileTable.Delete(deleteRow("REC_NO"), deleteRow("LIST_NO"), deleteRow("SEQ_NO"), deleteRow("FILE_NO"))
+        Next
 
-        '    Tx_playlist2FileTable.AcceptChanges()
+        'Tx_playlist2FileTable.AcceptChanges()
         'End If
 
         'add records to tx_playlist_song(iListNo)

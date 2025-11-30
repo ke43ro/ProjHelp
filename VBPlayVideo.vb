@@ -1,5 +1,4 @@
-﻿'Imports VideoLAN.LibVLC.Windows
-
+﻿
 Public Class VBPlayVideo
     Private Declare Function SetForegroundWindow Lib "user32" (ByVal hWnd As IntPtr) As Integer
     Private _mp As LibVLCSharp.Shared.MediaPlayer
@@ -25,7 +24,7 @@ Public Class VBPlayVideo
             .EnableKeyInput = True,
             .EnableMouseInput = True
         }
-
+        FVideo
         With myVideo
             .MediaPlayer = _mp
             .Visible = True
@@ -36,9 +35,6 @@ Public Class VBPlayVideo
 
         F_Video.WindowState = FormWindowState.Maximized
         Dim unused = SetForegroundWindow(F_Video.Handle)
-        'Dim unused = SetForegroundWindow(_mp.Hwnd)
-        'Dim unused = SetForegroundWindow(myVideo.Handle)
-
 
         WaitTillEnded(_mp)
 
@@ -50,6 +46,8 @@ Public Class VBPlayVideo
     Sub WaitTillEnded(myPlayer As LibVLCSharp.Shared.MediaPlayer)
         Threading.Thread.Sleep(2000)
         Do While myPlayer.IsPlaying
+            Dim pos = _mp.Position
+
             Threading.Thread.Sleep(1000)
         Loop
     End Sub

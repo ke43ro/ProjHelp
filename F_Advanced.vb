@@ -2,6 +2,8 @@
 
 Public Class F_Advanced
     Private isLoading As Boolean
+    Private ReadOnly myMsgBox As New DlgMsgBox
+
     Private Sub F_Advanced_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         isLoading = True
         ChkAutoSelectList.Checked = My.Settings.AutoShortList
@@ -56,4 +58,43 @@ Public Class F_Advanced
         End Using
     End Sub
 
+    Private Sub BtnPlayExp_Click(sender As Object, e As EventArgs) Handles BtnPlayExp.Click
+        Dim filePath As String = ""
+        Dim fileName As String
+        Dim iRandom As New Random
+        Dim connection As SQLiteConnection = F_Main.ProjHelpData.GetConnection()
+        If connection.State <> ConnectionState.Open Then
+            connection.Open()
+        End If
+
+        F_Main.ProjHelpData.EnsurePlaylistFilesView()
+
+        fileName = "ProjHelpPlay" & iRandom.Next & ".txt"
+
+        Try
+            filePath = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, fileName)
+            My.Computer.FileSystem.WriteAllText(filePath,
+                    "PlayDate" & vbTab & "File" & vbTab & "F_altname" & vbTab & "ShortList" & vbTab & "Active" & vbCrLf,
+                     False)
+        Catch fileException As Exception
+            myMsgBox.Show("Failed to create file " & filePath, "Projection Helper Playlists Export",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End Try
+
+        Dim sql As String = "SELECT * FROM v_playlist_files ORDER BY play_dt, seq_no"
+        Using cmd As New SQLiteCommand(sql, connection)
+            'cmd.Parameters.AddWithValue("@list_no", listNo)
+            Using rdr = cmd.ExecuteReader()
+                While rdr.Read()
+                    ' read columns: rdr("seq_no"), rdr("f_name"), rdr("resolved_full_path"), ...
+                    My.Computer.FileSystem.WriteAllText(filePath,
+                        rdr("play_dt") & vbTab & rdr("resolved_full_path") & vbCrLf,
+                        True)
+                End While
+            End Using
+        End Using
+
+        myMsgBox.Show("File creation complete: " & filePath, "Projection Helper Export", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
 End Class

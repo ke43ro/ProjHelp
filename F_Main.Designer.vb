@@ -39,6 +39,7 @@ Partial Class F_Main
         Me.ChkShortList = New System.Windows.Forms.CheckBox()
         Me.T_filesDataGridView = New System.Windows.Forms.DataGridView()
         Me.ChkPause = New System.Windows.Forms.CheckBox()
+        Me.BtnStop = New System.Windows.Forms.Button()
         Me.LBInstant = New System.Windows.Forms.ListBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -93,9 +94,9 @@ Partial Class F_Main
         'BtnPlay
         '
         Me.BtnPlay.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnPlay.Location = New System.Drawing.Point(775, 139)
+        Me.BtnPlay.Location = New System.Drawing.Point(743, 139)
         Me.BtnPlay.Name = "BtnPlay"
-        Me.BtnPlay.Size = New System.Drawing.Size(100, 37)
+        Me.BtnPlay.Size = New System.Drawing.Size(130, 37)
         Me.BtnPlay.TabIndex = 5
         Me.BtnPlay.Text = "&Play all"
         Me.ToolTip1.SetToolTip(Me.BtnPlay, "Start PowerPoint and show the list of songs")
@@ -104,7 +105,7 @@ Partial Class F_Main
         'BtnClear
         '
         Me.BtnClear.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClear.Location = New System.Drawing.Point(617, 139)
+        Me.BtnClear.Location = New System.Drawing.Point(602, 212)
         Me.BtnClear.Name = "BtnClear"
         Me.BtnClear.Size = New System.Drawing.Size(113, 37)
         Me.BtnClear.TabIndex = 4
@@ -207,6 +208,17 @@ Partial Class F_Main
         Me.ToolTip1.SetToolTip(Me.ChkPause, resources.GetString("ChkPause.ToolTip"))
         Me.ChkPause.UseVisualStyleBackColor = True
         '
+        'BtnStop
+        '
+        Me.BtnStop.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnStop.Location = New System.Drawing.Point(602, 139)
+        Me.BtnStop.Name = "BtnStop"
+        Me.BtnStop.Size = New System.Drawing.Size(113, 37)
+        Me.BtnStop.TabIndex = 28
+        Me.BtnStop.Text = "Cancel Play"
+        Me.ToolTip1.SetToolTip(Me.BtnStop, "Delete all the songs from the Play List")
+        Me.BtnStop.UseVisualStyleBackColor = True
+        '
         'LBInstant
         '
         Me.LBInstant.FormattingEnabled = True
@@ -235,7 +247,7 @@ Partial Class F_Main
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(581, 20)
         Me.Label4.TabIndex = 20
-        Me.Label4.Text = "Press a CTRL key to immediately display the currently selected song in the table " &
+        Me.Label4.Text = "Press a CTRL key to immediately display the song currently selected in the table " &
     "below."
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -288,11 +300,13 @@ Partial Class F_Main
         '
         'TextBox1
         '
+        Me.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TextBox1.Enabled = False
-        Me.TextBox1.Location = New System.Drawing.Point(635, 50)
+        Me.TextBox1.Location = New System.Drawing.Point(751, 68)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(100, 24)
         Me.TextBox1.TabIndex = 25
+        Me.TextBox1.Text = "For testing"
         Me.TextBox1.Visible = False
         '
         'LblVersion
@@ -310,6 +324,7 @@ Partial Class F_Main
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(892, 640)
+        Me.Controls.Add(Me.BtnStop)
         Me.Controls.Add(Me.ChkPause)
         Me.Controls.Add(Me.TxtListNo)
         Me.Controls.Add(Me.Label5)
@@ -365,4 +380,5 @@ Partial Class F_Main
     Friend WithEvents LblVersion As Label
     Friend WithEvents ChkPause As System.Windows.Forms.CheckBox
     Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents BtnStop As Button
 End Class

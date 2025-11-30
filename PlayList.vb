@@ -39,6 +39,7 @@ Public Class PlayList
     ' Play the file
     Private Sub PlayFile(myPath As String)
         Dim PlayPowerPoint As VBPlayPowerPoint, PlayPDF As VBPlayPDF, PlayWord As VBPlayWord
+        Dim PlayURL As VBPlayURL
         Dim myForm As F_Video
         Dim myMedia As Media
         Dim myExtn = GetExtn(myPath)
@@ -58,6 +59,11 @@ Public Class PlayList
                 PlayPDF = New VBPlayPDF
                 PlayPDF.Run(myPath)
                 PlayPDF = Nothing
+
+            Case ".url"
+                PlayURL = New VBPlayURL
+                PlayURL.Run(myPath)
+                PlayURL = Nothing
 
             Case Else
                 myMedia = GetMedia(myPath)
@@ -81,13 +87,14 @@ Public Class PlayList
         End Select
     End Sub
 
-    Public Sub Run(display As Screen, pause As Boolean, ByRef arPlayList As ListBox.ObjectCollection)
+    Public Sub Run(display As Screen, pause As Boolean, ByRef arPlayList As ListBox.ObjectCollection,
+                   connection As SQLiteConnection, Optional isInterrupted As Func(Of Boolean) = Nothing)
         Dim szFileName, szFPath As String, i, iFileNo, iIndex As Integer
         Dim myParts As String()
         PrefDisplay = display
         vidPause = pause
 
-        Dim connection As SQLiteConnection = F_Main.ProjHelpData.GetConnection()
+        'Dim connection As SQLiteConnection = F_Main.ProjHelpData.GetConnection()
         If connection.State <> ConnectionState.Open Then
             connection.Open()
         End If
@@ -100,6 +107,12 @@ Public Class PlayList
 
         i = -1
         Do
+            ' Check for interrupt before processing each file
+            If isInterrupted IsNot Nothing AndAlso isInterrupted() Then
+                'myMsgBox.Show("Playlist interrupted by operator.", "Playlist", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Exit Do
+            End If
+
             i += 1
             If i >= arPlayList.Count Then Exit Do
 
@@ -135,46 +148,6 @@ Public Class PlayList
             End If
             PlayFile(szFPath)
         Loop
-
-        'PPPres.Presentations.Open(szFileName)
-        'Dim iWin = PPPres.Windows.Count
-        'PPPres.Windows(iWin).ViewType = ppViewNormal
-        'With PPPres.Presentations(szFileName)
-        '    SSWin = .SlideShowSettings.Run()
-        '    'System.Threading.Thread.Sleep(500)
-        '    SSWin.Activate()
-        '    SSWin.View.First()
-        '    SetForegroundWindow(SSWin.HWND)
-        '    Do
-        '        If SSWin Is Nothing Then Exit Do
-        '        Try
-        '            If SSWin.Active Then System.Threading.Thread.Sleep(1000)
-        '        Catch ex As Exception
-        '            Exit Do
-        '        End Try
-        '    Loop
-
-        '    ' in case the user closes Powerpoint before closing the show
-        '    Try
-        '        .Close()
-        '    Catch ex As Exception
-
-        '    End Try
-        'End With
-
-        'Try
-        '    If PPPres IsNot Nothing Then
-        '        PPPres.WindowState = PpWindowState.ppWindowMinimized
-        '        PPPres.Quit()
-        '    End If
-
-        'Catch ex As Exception
-        '    myMsgBox.Show("Error minimising the PowerPoint window. Do you have a licenced copy of MS Office?" &
-        '            vbCrLf & "Please contact the programmer with this message:" & vbCrLf & ex.Message & vbCrLf &
-        '            ex.StackTrace,
-        '        "Presentation Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-
-        'End Try
 
     End Sub
 End Class
